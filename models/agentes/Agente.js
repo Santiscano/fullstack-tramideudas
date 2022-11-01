@@ -1,16 +1,16 @@
-const {Schema,model} = require('mongoose');
+const { Schema, model } = require("mongoose");
 const AgenteSchema = Schema({
-        
-    name: {
-        type: String,
-        required: [true,'El name es obligatorio']
-    },
-    password: {
-        type: String,
-        required: [true,'La contraseña es obligatoria'],    
-    }
+  username: {
+    type: String,
+    required: [true, "El username es obligatorio"],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, "La contraseña es obligatoria"],
+  },
 });
 
-const Agente = model('Agente',AgenteSchema);
+const Agente = model("Agente", AgenteSchema);
 
-module.exports = Agente
+module.exports = Agente;
