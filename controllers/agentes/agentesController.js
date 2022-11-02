@@ -31,6 +31,7 @@ const readAgentController = async (req, res) => {
     return res.status(200).send(data);
   } catch (error) {
     console.log(error.message);
+    res.status(400).send(error.message);
   }
 };
 
