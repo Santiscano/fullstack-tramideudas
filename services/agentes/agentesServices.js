@@ -1,5 +1,6 @@
 const Agente = require("../../models/agentes/Agente");
 const bcryptjs = require("bcryptjs");
+const Role = require("../../models/roles/Role");
 
 const createAgentServices = async (body) => {
   let { password, username } = body;
@@ -22,16 +23,23 @@ const createAgentServices = async (body) => {
 
   console.log(password);
 
+  const role = await Role.findOne({ role: "user" });
   const data = {
     username,
     password,
+    role: role._id,
   };
 
-  return await new Agente(data).save();
+  const agente = await new Agente(data).populate("role", "name");
+
+
+  agente.save();
+  
+  return agente;
 };
 
 const getAllAgentServices = async () => {
-  const agents = await Agente.find();
+  const agents = await Agente.find()
   return agents;
 };
 

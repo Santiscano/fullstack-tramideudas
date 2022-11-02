@@ -9,6 +9,10 @@ const AgenteSchema = Schema({
     type: String,
     required: [true, "La contraseña es obligatoria"],
   },
+  role: {
+    type: Schema.Types.ObjectId,
+    ref: "Role", 
+  },
 });
 
 const Agente = model("Agente", AgenteSchema);

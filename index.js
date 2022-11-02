@@ -9,6 +9,8 @@ app.use(express.json());
 // Rutas
 app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authLoginRouter.js"));
+app.use("/api/role/", require("./routes/roles/rolesRouter.js"))
+app.use("/api/ruta/", require("./routes/rutas/rutas.js"))
 
 app.listen(PORT, () => {
   console.log(`Server running in the port ${PORT}`);
