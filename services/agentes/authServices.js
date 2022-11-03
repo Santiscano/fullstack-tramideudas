@@ -22,8 +22,8 @@ const authServices = async (body) => {
 
   // JWT
 
-
-  const token = generateAccessToken(agent._id,agent.role)
+  const token = generateAccessToken(agent._id, agent.role);
+  
 
   return {
     token,

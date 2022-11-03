@@ -11,7 +11,7 @@ const {
 const router = Router();
 
 router.get("/", validateAccesToken, getAllRutaController);
-router.get("/:id", readRutaController);
+router.get("/:id",validateAccesToken, readRutaController);
 
 router.post("/", validateAccesToken, createRutaController);
 router.put("/:id", validateAccesToken, updateRutaController);

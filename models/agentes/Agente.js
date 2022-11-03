@@ -11,7 +11,7 @@ const AgenteSchema = Schema({
   },
   role: {
     type: Schema.Types.ObjectId,
-    ref: "Role", 
+    ref: "Role",
   },
 });
 

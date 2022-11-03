@@ -1,45 +1,40 @@
 const Role = require("../../models/roles/Role");
 
-
-
 const createRoleServices = async (body) => {
   const { name } = body;
 
-  
-
-  const roleValid = await Role.findOne({name});
+  const roleValid = await Role.findOne({ name });
 
   if (roleValid) throw new Error("El rol debe ser unico");
 
-
-  return await new Role({name}).save();
+  return await new Role({ name }).save();
 };
 
 const getAllRoleServices = async () => {
-   return await Role.find();
+  return await Role.find();
 };
 
 const updateRoleServices = async (params, body) => {
   const { id } = params;
-  let {name } = body;
+  let { name } = body;
 
   console.log(id);
-   if(!id) throw new Error("revisa el parametro")
+  if (!id) throw new Error("revisa el parametro");
 
   // Validaciones
   if (!name) throw new Error("Envia el role");
- 
 
-  const roleValid = await Role.findOne({name});
-  
+  const roleValid = await Role.findOne({ name });
 
   if (roleValid) throw new Error("El rol debe ser unico");
 
-
-
-  const role = await Role.findByIdAndUpdate({ _id: id },{name:name}, {
-    new: true,
-  });
+  const role = await Role.findByIdAndUpdate(
+    { _id: id },
+    { name: name },
+    {
+      new: true,
+    }
+  );
 
   return role;
 };

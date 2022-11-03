@@ -14,7 +14,7 @@ router.get("/", validateAccesToken, getAllRoleController);
 router.get("/:id", readRoleController);
 
 router.post("/", validateAccesToken, createRoleController);
-router.put("/:id", validateAccesToken,updateRoleController);
+router.put("/:id", validateAccesToken, updateRoleController);
 
 router.delete("/:id", validateAccesToken, deleteRoleController);
 

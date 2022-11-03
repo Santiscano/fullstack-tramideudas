@@ -23,7 +23,7 @@ const createAgentServices = async (body) => {
 
   console.log(password);
 
-  const role = await Role.findOne({ role: "user" });
+  const role = await Role.findOne({ name: "user" });
   const data = {
     username,
     password,
@@ -32,14 +32,13 @@ const createAgentServices = async (body) => {
 
   const agente = await new Agente(data).populate("role", "name");
 
-
   agente.save();
-  
+
   return agente;
 };
 
 const getAllAgentServices = async () => {
-  const agents = await Agente.find()
+  const agents = await Agente.find();
   return agents;
 };
 
