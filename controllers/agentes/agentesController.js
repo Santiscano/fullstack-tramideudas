@@ -11,8 +11,7 @@ const createAgentController = async (req, res) => {
     const data = await createAgentServices(req.body);
     return res.status(201).send(data);
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
+    res.status(400).json({msg:error.message});
   }
 };
 
@@ -22,13 +21,13 @@ const updateAgentController = async (req, res) => {
     return res.status(200).send(data);
   } catch (error) {
     console.log(error.message);
-    res.status(400).send(error.message);
+    res.status(400).send({msg:error.message});
   }
 };
 const readAgentController = async (req, res) => {
   try {
     const data = await readAgentServices(req.params);
-    return res.status(200).send(data);
+    return res.status(204).send(data);
   } catch (error) {
     console.log(error.message);
     res.status(400).send(error.message);
