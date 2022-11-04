@@ -5,16 +5,18 @@ const {
   updateAgentController,
   readAgentController,
   deleteAgentController,
+  updatePasswordController,
 } = require("../../controllers/agentes/agentesController");
 const validateAccesToken = require("../../middlewares/validateAccessToken");
 
 const router = Router();
 
 router.get("/", validateAccesToken, getAllAgentController);
-router.get("/:id", readAgentController);
+router.get("/:id", validateAccesToken, readAgentController);
 
 router.post("/", createAgentController);
-router.put("/:id", updateAgentController);
+router.put("/:id", validateAccesToken, updateAgentController);
+router.put("/", updatePasswordController);
 
 router.delete("/:id", validateAccesToken, deleteAgentController);
 

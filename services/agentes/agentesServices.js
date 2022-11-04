@@ -32,10 +32,16 @@ const createAgentServices = async (body) => {
     throw new Error("debes rellenar los campos");
   }
 
-  const usernameValid = await Agente.findOne({ username: username });
+  const usernameValid = await Agente.findOne({
+    username: username,
+    email: email,
+    document: document,
+  });
 
   if (usernameValid)
-    throw new Error("debes ingresar un username unico y el password");
+    throw new Error(
+      "debes ingresar un username, email, dni unicos y el password "
+    );
 
   // existe cargo
 
@@ -109,6 +115,35 @@ const updateAgentServices = async (params, body) => {
 
   return agent;
 };
+const updatePasswordServices = async (body) => {
+  let { document, email, username, password, newPassword } = body;
+
+  if (!document) throw new Error("envia el documento");
+  if (!email) throw new Error("envia tu email");
+  if (!username) throw new Error("envia tu username");
+  if (!password) throw new Error("envia tu password");
+  if (!newPassword) throw new Error("envia tu nuevo password");
+  if (password === newPassword) throw new Error("Pon una nueva contraseña");
+
+  const agent = await Agente.findOne({ document, email, username });
+
+  if (!agent) throw new Error("Revisa los datos enviados");
+
+  const check = bcryptjs.compareSync(password, agent.password);
+
+  if (!check) {
+    throw new Error("La contraseña no coincide");
+  }
+
+  const salt = bcryptjs.genSaltSync();
+  password = bcryptjs.hashSync(newPassword, salt);
+
+  return await Agente.findByIdAndUpdate(
+    { _id: agent.id },
+    { password: password },
+    { new: true }
+  );
+};
 
 const readAgentServices = async (params) => {
   const { id } = params;
@@ -120,7 +155,11 @@ const readAgentServices = async (params) => {
 const deleteAgentServices = async (params) => {
   const { id } = params;
 
-  return await Agente.findByIdAndDelete({ _id: id });
+  return await Agente.findByIdAndUpdate(
+    { _id: id },
+    { isActive: false },
+    { new: true }
+  );
 };
 module.exports = {
   createAgentServices,
@@ -128,4 +167,5 @@ module.exports = {
   updateAgentServices,
   getAllAgentServices,
   deleteAgentServices,
+  updatePasswordServices,
 };

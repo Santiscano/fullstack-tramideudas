@@ -44,6 +44,10 @@ const AgenteSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: "Role",
   },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Agente = model("Agente", AgenteSchema);

@@ -2,6 +2,7 @@ const {
   createAgentServices,
   getAllAgentServices,
   updateAgentServices,
+  updatePasswordServices,
   readAgentServices,
   deleteAgentServices,
 } = require("../../services/agentes/agentesServices");
@@ -19,6 +20,15 @@ const updateAgentController = async (req, res) => {
   try {
     const data = await updateAgentServices(req.params, req.body);
     return res.status(200).send(data);
+  } catch (error) {
+    console.log(error.message);
+    res.status(400).send({msg:error.message});
+  }
+};
+const updatePasswordController = async (req, res) => {
+  try {
+    const data = await updatePasswordServices( req.body);
+    return res.status(200).json({msg:data});
   } catch (error) {
     console.log(error.message);
     res.status(400).send({msg:error.message});
@@ -58,5 +68,6 @@ module.exports = {
   readAgentController,
   getAllAgentController,
   updateAgentController,
+  updatePasswordController,
   deleteAgentController,
 };

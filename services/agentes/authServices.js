@@ -21,9 +21,11 @@ const authServices = async (body) => {
   if (!validPassword) throw new Error("Verifica las credenciales");
 
   // JWT
+  let token;
 
-  const token = generateAccessToken(agent._id, agent.role);
-  
+  if (agent.isActive) {
+    token = generateAccessToken(agent._id, agent.role);
+  }
 
   return {
     token,
