@@ -1,6 +1,6 @@
 const { response, request } = require("express");
 const jwt = require("jsonwebtoken");
-const Ruta = require("../models/rutas/Ruta");
+const Ruta = require("../models/Ruta");
 
 const validateAccesToken = async (req = request, res = response, next) => {
   const { token } = req.cookies;

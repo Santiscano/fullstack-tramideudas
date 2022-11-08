@@ -1,7 +1,7 @@
-const Agente = require("../../models/agentes/Agente");
+const Agente = require("../../models/Agente");
 const bcryptjs = require("bcryptjs");
-const Role = require("../../models/roles/Role");
-const JobTitle = require("../../models/jobTitles/JobTitle");
+const Role = require("../../models/Role");
+const JobTitle = require("../../models/JobTitle");
 
 const createAgentServices = async (body) => {
   let {

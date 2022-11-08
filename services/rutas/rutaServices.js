@@ -1,5 +1,5 @@
-const Role = require("../../models/roles/Role");
-const Ruta = require("../../models/rutas/Ruta");
+const Role = require("../../models/Role");
+const Ruta = require("../../models/Ruta");
 
 const createRutaServices = async (body) => {
   const { ruta, get, post, put } = body;

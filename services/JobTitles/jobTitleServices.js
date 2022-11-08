@@ -1,4 +1,4 @@
-const JobTitle = require("../../models/jobTitles/JobTitle");
+const JobTitle = require("../../models/JobTitle");
 
 const createJobTitleServices = async (body) => {
   const { job_title } = body;

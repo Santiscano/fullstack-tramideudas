@@ -1,6 +1,6 @@
 const bcryptjs = require("bcryptjs");
 const { request } = require("express");
-const Agente = require("../../models/agentes/Agente");
+const Agente = require("../../models/Agente");
 const generateAccessToken = require("../../utils/generateAccessToken");
 const { generateUrl, generateToken } = require("../../utils/googleAuth");
 

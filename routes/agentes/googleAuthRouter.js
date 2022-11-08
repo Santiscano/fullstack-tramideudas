@@ -1,5 +1,5 @@
 const { Router, request } = require("express");
-const {authLoginController,authLogoutController,authGetTokenController,authSaveTokenController,authSendMailController} = require("../../controllers/agentes/authController");
+const {authLoginController,authLogoutController,authGetTokenController,authSaveTokenController,authSendMailController} = require("../../controllers/agentes/googleAuthController");
 const validateAccesToken = require("../../middlewares/validateAccessToken");
 
 const router = Router();
