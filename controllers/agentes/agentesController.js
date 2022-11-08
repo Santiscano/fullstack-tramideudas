@@ -12,7 +12,7 @@ const createAgentController = async (req, res) => {
     const data = await createAgentServices(req.body);
     return res.status(201).send(data);
   } catch (error) {
-    res.status(400).json({msg:error.message});
+    res.status(400).json({ msg: error.message });
   }
 };
 
@@ -22,16 +22,16 @@ const updateAgentController = async (req, res) => {
     return res.status(200).send(data);
   } catch (error) {
     console.log(error.message);
-    res.status(400).send({msg:error.message});
+    res.status(400).send({ msg: error.message });
   }
 };
 const updatePasswordController = async (req, res) => {
   try {
-    const data = await updatePasswordServices( req.body);
-    return res.status(200).json({msg:data});
+    const data = await updatePasswordServices(req.body);
+    return res.status(200).json({ msg: data });
   } catch (error) {
     console.log(error.message);
-    res.status(400).send({msg:error.message});
+    res.status(400).send({ msg: error.message });
   }
 };
 const readAgentController = async (req, res) => {
@@ -47,6 +47,7 @@ const readAgentController = async (req, res) => {
 const getAllAgentController = async (req, res) => {
   try {
     const data = await getAllAgentServices();
+    console.log(req.userId);
     return res.status(200).send(data);
   } catch (error) {
     console.log(error);

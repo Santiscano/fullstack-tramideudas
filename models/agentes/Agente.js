@@ -48,6 +48,12 @@ const AgenteSchema = Schema({
     type: Boolean,
     default: true,
   },
+  google_access_token: {
+    type: String,
+  },
+  google_refresh_token: {
+    type: String,
+  },
 });
 
 const Agente = model("Agente", AgenteSchema);
