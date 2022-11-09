@@ -1,7 +1,7 @@
 const { google } = require("googleapis");
 
-module.exports = {
-  generateUrl: async () => {
+
+ const generateUrl = async () => {
     try {
       const oAuth2Client = await new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT,
@@ -17,15 +17,12 @@ module.exports = {
         prompt: "consent",
         scope: GMAIL_SCOPES,
       });
-
-      return {
-        url: url,
-      };
+      return url
     } catch (error) {
       console.log(error);
     }
-  },
-  generateToken: async (code) => {
+  }
+ const generateToken = async (code) => {
     try {
       const oAuth2Client = await new google.auth.OAuth2(
         process.env.GOOGLE_CLIENT,
@@ -41,5 +38,10 @@ module.exports = {
       console.log(error.message);
       throw new Error("Algo salio mal");
     }
-  },
-};
+  }
+
+  module.exports = {
+    generateUrl,
+    generateToken
+  }
+

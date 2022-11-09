@@ -9,10 +9,9 @@ const {
 const createRutaController = async (req, res) => {
   try {
     const data = await createRutaServices(req.body);
-    return res.status(201).json(data);
+    return res.status(201).json({ response: data });
   } catch (error) {
-    console.log(error);
-    res.status(400).json({ msg: error.message });
+    res.status(400).json({ errorMessage: error.message });
   }
 };
 
@@ -20,38 +19,35 @@ const updateRutaController = async (req, res) => {
   try {
     console.log(req.params);
     const data = await updateRutaServices(req.params, req.body);
-    return res.status(200).send(data);
+    return res.status(200).json({ response: data });
   } catch (error) {
-    console.log(error.message);
-    res.status(400).json({ msg: error.message });
+    res.status(400).json({ errorMessage: error.message });
   }
 };
 const readRutaController = async (req, res) => {
   try {
     const data = await readRutaServices(req.params);
-    return res.status(200).send(data);
+    return res.status(200).json({ response: data });
   } catch (error) {
     console.log(error.message);
-    res.status(400).send(error.message);
+    res.status(400).json({ errorMessage: error.message });
   }
 };
 
 const getAllRutaController = async (req, res) => {
   try {
     const data = await getAllRutaServices();
-    return res.status(200).send(data);
+    return res.status(200).json({ response: data });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
+    res.status(400).json({ errorMessage: error.message });
   }
 };
 const deleteRutaController = async (req, res) => {
   try {
     const data = await deleteRutaServices(req.params);
-    return res.status(200).send(data);
+    return res.status(200).json({ response: data });
   } catch (error) {
-    console.log(error);
-    res.status(400).send(error.message);
+    res.status(400).json({ errorMessage: error.message });
   }
 };
 

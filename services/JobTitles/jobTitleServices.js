@@ -10,7 +10,6 @@ const createJobTitleServices = async (body) => {
   if (jobTitleValid) throw new Error("El Cargo debe ser unico");
 
   return await new JobTitle({ job_title }).save();
-  console.log("Entro bien");
 };
 
 const getAllJobTitleServices = async () => {

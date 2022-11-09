@@ -5,9 +5,8 @@ const Ruta = require("../models/Ruta");
 const validateAccesToken = async (req = request, res = response, next) => {
   const { token } = req.cookies;
 
-  if (!token) {
-    return res.status(401).json({ msg: "Revisa el token" });
-  }
+  if (!token)
+    return res.status(403).json({ response: "No tienes los permisos" });
 
   const metodo = req.method;
   const direccion = req.baseUrl.split("/").at(-1);
@@ -22,14 +21,13 @@ const validateAccesToken = async (req = request, res = response, next) => {
       [req.method]: role.toString(),
     });
 
-    if (!permisos) {
-      return res.status(401).json({ msg: "no tienes permisos" });
-    }
+    if (!permisos)
+      return res.status(403).json({ response: "No tienes los permisos" });
     req.userId = id;
     next();
   } catch (error) {
     console.log(error);
-    res.status(400).json({ msg: "Revisa el token" });
+    res.status(403).json({ ErrorMessage: ErrorMessage });
   }
 };
 

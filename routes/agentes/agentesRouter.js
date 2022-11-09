@@ -16,7 +16,7 @@ router.get("/:id", validateAccesToken, readAgentController);
 
 router.post("/", createAgentController);
 router.put("/:id", validateAccesToken, updateAgentController);
-router.put("/", updatePasswordController);
+router.put("/", validateAccesToken, updatePasswordController);
 
 router.delete("/:id", validateAccesToken, deleteAgentController);
 

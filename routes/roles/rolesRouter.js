@@ -11,7 +11,7 @@ const {
 const router = Router();
 
 router.get("/", validateAccesToken, getAllRoleController);
-router.get("/:id", readRoleController);
+router.get("/:id", validateAccesToken, readRoleController);
 
 router.post("/", validateAccesToken, createRoleController);
 router.put("/:id", validateAccesToken, updateRoleController);
