@@ -9,6 +9,10 @@ const AgenteSchema = Schema({
     type: String,
     required: [true, "El fullname es obligatorio"],
   },
+  name_show_email: {
+    type: String,
+    required: [true, "El nombre para mail es obligatorio"],
+  },
   email: {
     type: String,
     required: [true, "el mail es obligatorio"],
@@ -39,6 +43,18 @@ const AgenteSchema = Schema({
   job_title: {
     type: Schema.Types.ObjectId,
     ref: "JobTitle",
+  },
+  entry_time: {
+    type: String,
+    required: [true, "La hora de entrada es obligatoria"],
+  },
+  break_time: {
+    type: String,
+    required: [true, "La hora de descanso es obligatoria"],
+  },
+  daily_working_hours: {
+    type: String,
+    required: [true, "Las horas diarias son obligatorias"],
   },
   role: {
     type: Schema.Types.ObjectId,

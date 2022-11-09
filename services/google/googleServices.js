@@ -1,6 +1,8 @@
-
 const Agente = require("../../models/Agente");
-const { generateUrl, generateToken } = require("../../utils/googleAuthGenerate");
+const {
+  generateUrl,
+  generateToken,
+} = require("../../utils/googleAuthGenerate");
 const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 
@@ -21,18 +23,19 @@ const saveTokenGoogleServices = async (req = request) => {
 
 const sendGmailServices = async (params, body) => {
   const { id } = params;
-  const { message } = body;
+  const { message, subject, to } = body;
 
-  if (!id || !message) throw new Error("Envia el id y el mensaje");
+  if (!id) throw new Error("Envia el id");
+  if (!message || !subject || !to)
+    throw new Error("Debes rellenar todos los campos antes de enviar el mail");
 
   const agente = await Agente.findOne({ _id: id });
 
   if (!agente) throw new Error("no existe el agente");
 
-  const { google_access_token, google_refresh_token, email } = agente;
-
+  const { google_access_token, google_refresh_token, email, name_show_email } =
+    agente;
   const GMAIL_SCOPES = ["https://mail.google.com/"];
-
   const oAuth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_CLIENT,
     process.env.GOOGLE_SECRET_ID,
@@ -47,28 +50,29 @@ const sendGmailServices = async (params, body) => {
     service: "gmail",
     auth: {
       type: "OAuth2",
-      user: "newusertest3.0@gmail.com",
+      user: email, // cambiar el mail
       clientId: process.env.GOOGLE_CLIENT,
       clientSecret: process.env.GOOGLE_SECRET_ID,
       refreshToken: google_refresh_token,
-      accessToken: { token },
+      accessToken: token,
     },
   });
 
+  // TODO: SISTEMA PARA ENVIAR ARCHIVOS ADJUNTOS
+
   const mailOptions = {
-    from: "Siddhant &lt;newusertest3.0@gmail.com>",
-    to: "contacto@manuel-corrales.es",
-    subject: "Gmail API NodeJS",
-    text: "The Gmail API with NodeJS works",
+    from: `${name_show_email} <${email}>`, // cambiar por NameMail y el mail
+    to,
+    subject,
+    text: message,
   };
 
   const result = await transport.sendMail(mailOptions);
-  console.log(result);
   return "Email Enviado";
 };
 
 module.exports = {
-    authenticateGoogleGmailServices,
-    saveTokenGoogleServices,
-    sendGmailServices,
+  authenticateGoogleGmailServices,
+  saveTokenGoogleServices,
+  sendGmailServices,
 };

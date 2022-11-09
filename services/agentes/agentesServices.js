@@ -7,6 +7,7 @@ const createAgentServices = async (body) => {
   let {
     username,
     fullname,
+    name_email,
     email,
     telephones,
     document,
@@ -14,6 +15,9 @@ const createAgentServices = async (body) => {
     schedule,
     job_title,
     password,
+    init_time,
+    break_time,
+    daily_working_hours
   } = body;
 
   // validaciones
@@ -21,28 +25,42 @@ const createAgentServices = async (body) => {
   if (
     !email ||
     !fullname ||
+    !name_email ||
     !username ||
     !password ||
     !schedule ||
     !document ||
     !workplace ||
     !telephones ||
+    !init_time ||
+    !break_time ||
+    !daily_working_hours ||
     !job_title
   ) {
     throw new Error("debes rellenar los campos");
   }
 
+  const regxGmail = new RegExp("^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$")  
+  console.log(!regxGmail.test(email));
+  
+  if (!regxGmail.test(email)) throw new Error('Debe ser un gmail valido')
+  
+  //TODO:VALIDAR MEJOR QUE EL EMAIL EL USER Y EL DOCUMENT SEAN UNICOS
+  
   const usernameValid = await Agente.findOne({
     username: username,
     email: email,
     document: document,
   });
-
+  
   if (usernameValid)
-    throw new Error(
-      "debes ingresar un username, email, dni unicos y el password "
+  throw new Error(
+    "debes ingresar un username, email, dni unicos y el password "
     );
-
+    const documentExist = await Agente.findOne({ document: document});
+    
+    if (documentExist) throw new Error('El documento no es valido')
+    
   // existe cargo
 
   const jobTilte = await JobTitle.findOne({ job_title });
@@ -59,6 +77,7 @@ const createAgentServices = async (body) => {
   const role = await Role.findOne({ name: "user" });
   const data = {
     username,
+    name_show_email:name_email,
     password,
     role: role._id,
     fullname,
@@ -67,8 +86,13 @@ const createAgentServices = async (body) => {
     document,
     workplace,
     schedule,
+    entry_time:init_time,
+    break_time,
+    daily_working_hours,
     job_title: jobTilte._id,
   };
+
+  
 
   const agente = await new Agente(data).populate("role", "name");
 
