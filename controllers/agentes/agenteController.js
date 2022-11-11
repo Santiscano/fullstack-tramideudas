@@ -44,7 +44,6 @@ const readAgentController = async (req, res) => {
 const getAllAgentController = async (req, res) => {
   try {
     const data = await getAllAgentServices();
-    console.log(req.userId);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

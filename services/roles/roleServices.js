@@ -31,9 +31,7 @@ const updateRoleServices = async (params, body) => {
   const role = await Role.findByIdAndUpdate(
     { _id: id },
     { name: name },
-    {
-      new: true,
-    }
+    { new: true }
   );
 
   return role;

@@ -42,6 +42,7 @@ const sendGmailServices = async (params, body) => {
     GMAIL_SCOPES
   );
 
+  console.log(email);
   oAuth2Client.setCredentials({ refresh_token: google_refresh_token });
 
   const { token } = await oAuth2Client.getAccessToken();

@@ -6,7 +6,7 @@ const {
   readAgentController,
   deleteAgentController,
   updatePasswordController,
-} = require("../../controllers/agentes/agentesController");
+} = require("../../controllers/agentes/agenteController");
 const validateAccesToken = require("../../middlewares/validateAccessToken");
 
 const router = Router();

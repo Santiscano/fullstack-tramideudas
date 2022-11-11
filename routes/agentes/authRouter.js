@@ -2,7 +2,7 @@ const { Router } = require("express");
 const {
   authLoginController,
   authLogoutController,
-} = require("../../controllers/agentes/AuthController");
+} = require("../../controllers/agentes/authController");
 const validateAccesToken = require("../../middlewares/validateAccessToken");
 
 const router = Router();

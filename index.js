@@ -11,6 +11,7 @@ app.use(express.json());
 // Rutas
 app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
+app.use("/api/ficha/", require("./routes/fichas/fichasRouter.js"));
 app.use("/api/google/", require("./routes/google/googleRouter.js"));
 app.use("/api/jobtitle/", require("./routes/jobTitles/jobTitlesRouter.js"));
 app.use("/api/role/", require("./routes/roles/rolesRouter.js"));
