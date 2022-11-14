@@ -26,8 +26,7 @@ const validateAccesToken = async (req = request, res = response, next) => {
     req.userId = id;
     next();
   } catch (error) {
-    console.log(error);
-    res.status(403).json({ ErrorMessage: ErrorMessage });
+    res.status(403).json({ ErrorMessage: "No estas autorizado" });
   }
 };
 

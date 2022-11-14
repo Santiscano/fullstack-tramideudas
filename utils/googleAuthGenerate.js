@@ -2,7 +2,7 @@ const { google } = require("googleapis");
 
 const generateUrl = async () => {
   try {
-    const oAuth2Client = await new google.auth.OAuth2(
+    const oAuth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT,
       process.env.GOOGLE_SECRET_ID,
       process.env.GOOGLE_URI_REDIRECT
@@ -10,7 +10,7 @@ const generateUrl = async () => {
 
     const GMAIL_SCOPES = ["https://mail.google.com/"];
 
-    const url = await oAuth2Client.generateAuthUrl({
+    const url = oAuth2Client.generateAuthUrl({
       redirect_uri: process.env.GOOGLE_URI_REDIRECT,
       access_type: "offline",
       prompt: "consent",
@@ -23,7 +23,7 @@ const generateUrl = async () => {
 };
 const generateToken = async (code) => {
   try {
-    const oAuth2Client = await new google.auth.OAuth2(
+    const oAuth2Client = new google.auth.OAuth2(
       process.env.GOOGLE_CLIENT,
       process.env.GOOGLE_SECRET_ID,
       process.env.GOOGLE_URI_REDIRECT

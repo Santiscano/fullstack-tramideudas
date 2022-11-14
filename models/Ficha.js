@@ -28,6 +28,9 @@ const FichaSchema = Schema({
   isHoliday: {
     type: Boolean,
   },
+  notWork: {
+    type:Boolean
+  }
 });
 
 const Ficha = model("Ficha", FichaSchema);

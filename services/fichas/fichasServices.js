@@ -2,6 +2,7 @@ const moment = require("moment");
 const momenttz = require("moment-timezone");
 const Ficha = require("../../models/Ficha");
 const Agente = require("../../models/Agente");
+const { closeAllFichas } = require("../../utils/closeAllFichas");
 
 moment.tz.setDefault("Europe/Madrid");
 
@@ -25,15 +26,6 @@ const createFichasServices = async (req) => {
 
   const breakParse = moment(break_time, "mm");
 
-  // console.log(breakParse);
-  // console.log(entry_time, "hora entrada sin parsear");
-  // console.log(momentNow, "hora actual");
-  // console.log(entryParse, "hora en la que deberia entrar");
-
-  //console.log(momentNow.isSameOrBefore(entryParse));
-
-  // verificar si es tarde
-
   // si la ficha existe
   if (findFicha) {
     // guardo tiempo de descanso
@@ -41,15 +33,9 @@ const createFichasServices = async (req) => {
       await findFicha.updateOne({ break: moment().toDate() });
     //verificar el descanso
     if (findFicha.break && !findFicha.return) {
-      // usar diff?
-      //si llego con minutos de diferencia los minutos que tiene, pedir justificacion
-
       const breakNow = moment(findFicha.break);
       const totalMinutes = momentNow.diff(breakNow, "minutes");
       const strictMinutes = breakParse.minutes();
-
-      // console.log(strictMinutes, "minutos que tiene para descansar");
-      // console.log(momentNow.diff(breakNow, "minutes"), "minutos que descanso");
 
       if (strictMinutes <= totalMinutes && !justifications)
         throw new Error("Volviste tarde envia la justificacion");

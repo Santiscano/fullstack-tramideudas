@@ -10,6 +10,6 @@ const router = Router();
 // login
 router.post("/login", authLoginController);
 // logout
-router.get("/logout", validateAccesToken, authLogoutController);
+router.get("/logout", authLogoutController);
 
 module.exports = router;
