@@ -3,10 +3,10 @@ const validateAccesToken = require("../../middlewares/validateAccessToken");
 const {
   createFichasController,
   getAllFichasController,
-  updateFichasController,
+ updateFichajeJustificationsController,
   readFichasController,
   deleteFichasController,
-} = require("../../controllers/fichas/fichaController");
+} = require("../../controllers/fichajes/fichajeController");
 
 const router = Router();
 
@@ -14,7 +14,7 @@ router.get("/", validateAccesToken, getAllFichasController);
 router.get("/:id/:page/:limit", validateAccesToken, readFichasController);
 
 router.post("/", validateAccesToken, createFichasController);
-router.put("/:id", validateAccesToken, updateFichasController);
+router.put("/:id", validateAccesToken, updateFichajeJustificationsController);
 
 router.delete("/:id", validateAccesToken, deleteFichasController);
 

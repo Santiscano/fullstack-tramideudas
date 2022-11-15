@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const FichaSchema = Schema({
+const FichajeSchema = Schema({
   agente: {
     type: Schema.Types.ObjectId,
     ref: "Agente",
@@ -20,7 +20,15 @@ const FichaSchema = Schema({
     type: Date,
   },
   justifications: {
-    type: [String],
+    entry: {
+      type: String,
+    },
+    break: {
+      type: String,
+    },
+    notWorked: {
+      type: String,
+    },
   },
   isWeekend: {
     type: Boolean,
@@ -29,10 +37,10 @@ const FichaSchema = Schema({
     type: Boolean,
   },
   notWork: {
-    type:Boolean
-  }
+    type: Boolean,
+  },
 });
 
-const Ficha = model("Ficha", FichaSchema);
+const Fichaje = model("Fichaje", FichajeSchema);
 
-module.exports = Ficha;
+module.exports = Fichaje;

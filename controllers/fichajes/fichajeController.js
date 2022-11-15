@@ -1,10 +1,10 @@
 const {
   createFichasServices,
   getAllFichasServices,
-  updateFichasServices,
+  updateFichajeJustificationsServices,
   readFichasServices,
   deleteFichasServices,
-} = require("../../services/fichas/fichasServices");
+} = require("../../services/fichajes/fichajesServices");
 
 const createFichasController = async (req, res) => {
   try {
@@ -15,9 +15,12 @@ const createFichasController = async (req, res) => {
   }
 };
 
-const updateFichasController = async (req, res) => {
+const updateFichajeJustificationsController = async (req, res) => {
   try {
-    const data = await updateFichasServices(req.params, req.body);
+    const data = await updateFichajeJustificationsServices(
+      req.params,
+      req.body
+    );
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
@@ -26,7 +29,7 @@ const updateFichasController = async (req, res) => {
 const readFichasController = async (req, res) => {
   try {
     const data = await readFichasServices(req);
-    return res.status(200).json( data );
+    return res.status(200).json(data);
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
   }
@@ -53,6 +56,6 @@ module.exports = {
   createFichasController,
   readFichasController,
   getAllFichasController,
-  updateFichasController,
+  updateFichajeJustificationsController,
   deleteFichasController,
 };

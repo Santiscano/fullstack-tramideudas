@@ -1,6 +1,6 @@
 const moment = require("moment");
 const Agente = require("../models/Agente");
-const Ficha = require("../models/Ficha");
+const Ficha = require("../models/Fichaje");
 const Holiday = require("../models/Holiday");
 
 require("moment-timezone");
@@ -12,7 +12,7 @@ const dayAndMouth = moment().format("D-M");
 const dayOfWeek = moment().format("dddd");
 const isWeekend = dayOfWeek === "Sunday" || dayOfWeek === "Saturday";
 
-const closeAllFichas = async () => {
+const closeAllFichajes = async () => {
   const agentesId = await Agente.find()
     .where({ isActive: true })
     .distinct("_id");
@@ -62,4 +62,4 @@ const closeAllFichas = async () => {
   });
 };
 
-module.exports = { closeAllFichas };
+module.exports = { closeAllFichajes };

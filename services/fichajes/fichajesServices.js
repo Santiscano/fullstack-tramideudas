@@ -1,8 +1,8 @@
 const moment = require("moment");
 const momenttz = require("moment-timezone");
-const Ficha = require("../../models/Ficha");
+const Fichaje = require("../../models/Fichaje");
 const Agente = require("../../models/Agente");
-const { closeAllFichas } = require("../../utils/closeAllFichas");
+const { closeAllFichajes } = require("../../utils/closeAllFichajes");
 
 moment.tz.setDefault("Europe/Madrid");
 
@@ -11,8 +11,19 @@ const createFichasServices = async (req) => {
   const { justifications } = req.body;
   const { entry_time, break_time } = await Agente.findById({ _id: userId });
 
+  const finchasUnjustified = await Fichaje.findOne({
+    agente: userId,
+    notWork: true,
+    "justifications.notWorked": null,
+  });
+
+  if (finchasUnjustified)
+    throw new Error(
+      `Tienes una falta anterior, Justificala ${finchasUnjustified._id}`
+    );
+
   //Busca la ficha de hoy
-  const findFicha = await Ficha.findOne({
+  const findFicha = await Fichaje.findOne({
     $and: [
       { agente: { $eq: userId } },
       { date: { $gte: moment().startOf("day") } },
@@ -20,10 +31,11 @@ const createFichasServices = async (req) => {
     ],
   });
 
-  // parseo
-  const entryParse = moment(entry_time, "HH:mm");
-  const momentNow = moment();
+  console.log(finchasUnjustified);
 
+  // parseo
+  const momentNow = moment();
+  const entryParse = moment(entry_time, "HH:mm");
   const breakParse = moment(break_time, "mm");
 
   // si la ficha existe
@@ -41,14 +53,16 @@ const createFichasServices = async (req) => {
         throw new Error("Volviste tarde envia la justificacion");
 
       if (justifications)
-        await findFicha.update({ $push: { justifications: justifications } });
+        await findFicha.updateOne({
+          "justifications.break": justifications,
+        });
 
       await findFicha.updateOne({ return: moment().toDate() });
       return "Bienvenido de tu descanso";
     }
     if (findFicha.return && !findFicha.exit) {
       await findFicha.updateOne({ exit: moment().toDate() });
-
+      console.log(findFicha);
       return "Fecha de salida registrada!";
     }
 
@@ -63,11 +77,11 @@ const createFichasServices = async (req) => {
       throw new Error("Entraste tarde, debes enviar tu justificacion");
 
     // crear ficha
-    const ficha = new Ficha({
+    const ficha = new Fichaje({
       date: moment().toDate(),
       entry: moment().toDate(),
       agente: userId,
-      justifications,
+      justifications: { entry: justifications },
     });
     await ficha.save();
 
@@ -75,30 +89,49 @@ const createFichasServices = async (req) => {
   }
 };
 
-const getAllFichasServices = async () => {};
+const getAllFichasServices = async () => {
+  closeAllFichajes();
+};
 
-const updateFichasServices = async (params, body) => {
-  console.log("PUT");
+const updateFichajeJustificationsServices = async (params, body) => {
+  const { id } = params;
+  const { justifications } = body;
+
+  const fichaje = await Fichaje.findById({ _id: id });
+
+  if (!id) throw Error("No enviaste el id del fichaje");
+  if (!justifications) throw Error("No enviaste tu justificacion");
+  if (!fichaje) throw Error("Esa ficha no existe");
+
+  await fichaje.updateOne({
+    "justifications.notWorked": justifications,
+  });
+
+  return "Falta justificada";
 };
 
 const readFichasServices = async (req) => {
   const { daystart = 0, dayend = 0 } = req.query;
-  const { limit = 30, page = 0 } = req.params;
+  let { limit = 30, page = 0 } = req.params;
+  limit = parseInt(limit);
   const { id } = req.params;
-
   const init = moment(daystart, "DD MM YYYY hh:mm:ss");
   const end = moment(dayend, "DD MM YYYY hh:mm:ss");
 
-  const fichas = await Ficha.find({
+  const query = {
     $and: [
       { agente: { $eq: id } },
       { date: { $gte: init } },
       { date: { $lt: end } },
     ],
-  })
+  };
+
+  const fichas = await Fichaje.find(query)
     .skip(page * limit)
     .limit(limit)
     .lean();
+
+  const count = await Fichaje.countDocuments(query);
 
   // obtener dias que menos trabajó
   const fichaComplete = fichas.map((ficha) => {
@@ -116,8 +149,10 @@ const readFichasServices = async (req) => {
   );
 
   const data = {
+    total: count,
     page: +page,
-    totalHoursWorked,
+    per_page: limit,
+    args: { totalHoursWorked },
     result: fichaComplete.sort((x, y) => x.hoursWorked - y.hoursWorked),
   };
 
@@ -129,7 +164,7 @@ const deleteFichasServices = async (params) => {
 module.exports = {
   createFichasServices,
   readFichasServices,
-  updateFichasServices,
+  updateFichajeJustificationsServices,
   getAllFichasServices,
   deleteFichasServices,
 };

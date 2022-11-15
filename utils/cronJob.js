@@ -1,15 +1,18 @@
-const cron = require('node-cron');
-const {closeAllFichas} = require('./closeAllFichas');
+const cron = require("node-cron");
+const { closeAllFichajes } = require("./closeAllFichajes");
 
-cron.schedule('0 22 * * *', async() => {
+cron.schedule(
+  "0 22 * * *",
+  async () => {
     try {
-        console.log('cierre de fichas programadas');
-        closeAllFichas()
+      console.log("cierre de fichas programadas");
+      closeAllFichajes();
     } catch (error) {
-        console.log(error);
+      console.log(error);
     }
-}, {
-  scheduled: true,
-  timezone: "Europe/Madrid"
-});
-
+  },
+  {
+    scheduled: true,
+    timezone: "Europe/Madrid",
+  }
+);
