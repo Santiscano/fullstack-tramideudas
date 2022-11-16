@@ -20,8 +20,9 @@ const closeAllFichajes = async () => {
   // obtengo si hay un feriado
   const isHoliday = await Holiday.findOne({ date: dayAndMouth });
 
+  // recorro cada agente
   agentesId.forEach(async (id) => {
-    
+    // busco si existe la ficha
     const findFicha = await Ficha.findOne({
       $and: [
         { agente: { $eq: id } },
@@ -30,8 +31,31 @@ const closeAllFichajes = async () => {
       ],
     });
 
+    // busco el agente
+    const agente = await Agente.findById(id);
+    // recorro los dias de vacaciones
+
+    let agentInVacation;
+
+    if (agente.isVacation.length >= 1) {
+      agente.isVacation.forEach((vacations) => {
+        const vacation = moment(vacations).format("DD-MMM-YYYY");
+
+        if (vacation === moment().format("DD-MMM-YYYY")) {
+          return (agentInVacation = true);
+        }
+      });
+    }
     if (!findFicha) {
       let data;
+
+      if (agentInVacation) {
+        data = {
+          date: moment().toDate(),
+          agente: id,
+          isVacation: true,
+        };
+      }
 
       if (isWeekend) {
         data = {
@@ -49,7 +73,7 @@ const closeAllFichajes = async () => {
         };
       }
 
-      if (!isHoliday && !isWeekend) {
+      if (!isHoliday && !isWeekend && !agentInVacation) {
         data = {
           date: moment().toString(),
           agente: id,

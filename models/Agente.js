@@ -40,6 +40,9 @@ const AgenteSchema = Schema({
     type: String,
     required: [true, "La contraseña es obligatoria"],
   },
+  isVacation: {
+    type: [Date],
+  },
   job_title: {
     type: Schema.Types.ObjectId,
     ref: "JobTitle",

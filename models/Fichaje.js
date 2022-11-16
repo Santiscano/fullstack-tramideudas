@@ -39,6 +39,9 @@ const FichajeSchema = Schema({
   notWork: {
     type: Boolean,
   },
+  isVacation: {
+    type: Boolean,
+  },
 });
 
 const Fichaje = model("Fichaje", FichajeSchema);

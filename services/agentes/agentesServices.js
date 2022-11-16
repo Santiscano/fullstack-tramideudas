@@ -17,7 +17,8 @@ const createAgentServices = async (body) => {
     password,
     init_time,
     break_time,
-    daily_working_hours
+    isVacation,
+    daily_working_hours,
   } = body;
 
   // validaciones
@@ -40,27 +41,26 @@ const createAgentServices = async (body) => {
     throw new Error("debes rellenar los campos");
   }
 
-  const regxGmail = new RegExp("^[a-z0-9](\.?[a-z0-9]){5,}@g(oogle)?mail\.com$")  
-  console.log(!regxGmail.test(email));
-  
-  if (!regxGmail.test(email)) throw new Error('Debe ser un gmail valido')
-  
+  const regxGmail = new RegExp("^[a-z0-9](.?[a-z0-9]){5,}@g(oogle)?mail.com$");
+
+  if (!regxGmail.test(email)) throw new Error("Debe ser un gmail valido");
+
   //TODO:VALIDAR MEJOR QUE EL EMAIL EL USER Y EL DOCUMENT SEAN UNICOS
-  
+
   const usernameValid = await Agente.findOne({
     username: username,
     email: email,
     document: document,
   });
-  
+
   if (usernameValid)
-  throw new Error(
-    "debes ingresar un username, email, dni unicos y el password "
+    throw new Error(
+      "debes ingresar un username, email, dni unicos y el password "
     );
-    const documentExist = await Agente.findOne({ document: document});
-    
-    if (documentExist) throw new Error('El documento no es valido')
-    
+  const documentExist = await Agente.findOne({ document: document });
+
+  if (documentExist) throw new Error("El documento no es valido");
+
   // existe cargo
 
   const jobTilte = await JobTitle.findOne({ job_title });
@@ -77,7 +77,7 @@ const createAgentServices = async (body) => {
   const role = await Role.findOne({ name: "user" });
   const data = {
     username,
-    name_show_email:name_email,
+    name_show_email: name_email,
     password,
     role: role._id,
     fullname,
@@ -86,13 +86,12 @@ const createAgentServices = async (body) => {
     document,
     workplace,
     schedule,
-    entry_time:init_time,
+    entry_time: init_time,
     break_time,
     daily_working_hours,
     job_title: jobTilte._id,
+    isVacation,
   };
-
-  
 
   const agente = await new Agente(data).populate("role", "name");
 
@@ -108,7 +107,7 @@ const getAllAgentServices = async () => {
 
 const updateAgentServices = async (params, body) => {
   const { id } = params;
-  let { username, password } = body;
+  let { username, password, isVacation } = body;
 
   // Validaciones
 
@@ -116,9 +115,9 @@ const updateAgentServices = async (params, body) => {
     throw new Error("debes ingresar un username unico y el password");
   }
 
-  const usernameValid = await Agente.findOne({ username: username });
+  const usernameValid = await Agente.findOne({ username });
 
-  if (usernameValid)
+  if (!usernameValid)
     throw new Error("debes ingresar un username unico y el password");
 
   //hash
@@ -131,6 +130,7 @@ const updateAgentServices = async (params, body) => {
   const data = {
     username,
     password,
+    isVacation,
   };
 
   const agent = await Agente.findByIdAndUpdate({ _id: id }, data, {
