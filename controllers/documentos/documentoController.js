@@ -14,11 +14,9 @@ const {
   const downloadDocumentosController = async (req, res) => {
     try {
       const {pathfile,filename} = await downloadDocumentosServices(req);
-      // return res.status(201).json({ response:'ok' });
-
       res.status(200).download(pathfile, filename, function (err) {
         if (err) {
-            console.log(err);
+            res.status(err.status).json({errorMessage:'No se encontro el archivo'})
         } else {
           // decrement a download credit, etc.
         }

@@ -7,10 +7,10 @@ const DocumentoSchema = Schema({
   type: {
     type: String,
   },
-  path_local: {
+  category: {
     type: String,
   },
-  url_local: {
+  path_local: {
     type: String,
   },
   id_amazon: {
@@ -19,7 +19,10 @@ const DocumentoSchema = Schema({
   md5: {
     type: String,
   },
-});
+  url_local: {
+    type: String,
+  },
+},{ versionKey: false });
 
 const Documento = model("Documento", DocumentoSchema);
 module.exports = Documento;
