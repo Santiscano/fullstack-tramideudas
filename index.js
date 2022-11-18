@@ -1,11 +1,10 @@
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
-const fileUpload = require('express-fileupload');
+const fileUpload = require("express-fileupload");
 const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 8080;
 const connectDB = require("./db/DBconfig");
-
 
 // cron job
 require("./utils/cronJob");

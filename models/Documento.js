@@ -13,10 +13,10 @@ const DocumentoSchema = Schema({
   path_local: {
     type: String,
   },
-  id_amazon: {
+  md5: {
     type: String,
   },
-  md5: {
+  id_amazon: {
     type: String,
   },
   url_local: {

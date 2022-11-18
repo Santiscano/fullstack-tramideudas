@@ -1,14 +1,12 @@
 const Documento = require("../../models/Documento");
 const { v4: uuidv4 } = require("uuid");
 const path = require("path");
+const { uploadFile, getFileAndUrl } = require("./amazonS3");
 
 const createDocumentosServices = async (req) => {
-
- let documentos, uploadPath, data, document;
- const {name,category} = req.body
+  let documentos, uploadPath, data, document;
+  const { name, category } = req.body;
   //TODO:SEGMENTAR EL CODIGO?
-
-  console.log(req.body);
 
   if (!req.files || Object.keys(req.files).length === 0)
     throw new Error("No enviaste ningun Documento");
@@ -20,9 +18,10 @@ const createDocumentosServices = async (req) => {
   if (Object.keys(req.files).length >= 2)
     throw new Error("Envia solo un documento");
 
-if (!name || !category) throw new Error('Debes enviar el nombre y categoria del documento')
-  
-const existFile = await Documento.findOne({ md5: documentos.md5 });
+  if (!name || !category)
+    throw new Error("Debes enviar el nombre y categoria del documento");
+
+  const existFile = await Documento.findOne({ md5: documentos.md5 });
 
   // Quito la extension del nombre y creo otro name para guardarlo
   // const nameFile = documentos.name.substr(0, documentos.name.lastIndexOf("."));
@@ -46,7 +45,6 @@ const existFile = await Documento.findOne({ md5: documentos.md5 });
     //subo los archivos al path
     documentos.mv(uploadPath, (err) => {
       if (err) return console.log(err);
-
     });
 
     //TODO: AMAZON
@@ -55,7 +53,6 @@ const existFile = await Documento.findOne({ md5: documentos.md5 });
       type: extension,
       category,
       path_local: uploadPath,
-      id_amazon: "pendiente",
       md5: documentos.md5,
     };
 
@@ -63,6 +60,14 @@ const existFile = await Documento.findOne({ md5: documentos.md5 });
   }
 
   await document.save();
+
+  if (!document.id_amazon) {
+    const key = document._id.toString();
+    const result = await uploadFile(document.path_local, key);
+    if (result) {
+      await document.updateOne({ id_amazon: document._id });
+    }
+  }
 
   const id = document._id.toString();
   //creo la url con el id
@@ -78,8 +83,8 @@ const downloadDocumentosServices = async (req) => {
   const { id } = req.params;
 
   const documento = await Documento.findById({ _id: id });
-  const name = documento.name.replace(/\./g, '_').replace(/\//g, '_')
-  
+  const name = documento.name.replace(/\./g, "_").replace(/\//g, "_");
+
   const filename = `${name}.${documento.type}`;
 
   const data = {
@@ -89,7 +94,15 @@ const downloadDocumentosServices = async (req) => {
 
   return data;
 };
+
+const GetUrlAmazonS3Services = async (req) => {
+  const { id } = req.params;
+
+  const url = await getFileAndUrl(id);
+  return url;
+};
 module.exports = {
   createDocumentosServices,
   downloadDocumentosServices,
+  GetUrlAmazonS3Services,
 };
