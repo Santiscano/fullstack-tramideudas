@@ -1,7 +1,18 @@
-const Documento = require("../../models/Documento");
 const { v4: uuidv4 } = require("uuid");
+const moment = require("moment");
+require("moment-timezone");
 const path = require("path");
+const fs = require("fs");
+const axios = require("axios");
+const util = require("util");
+const stream = require("stream");
+const pipeline = util.promisify(stream.pipeline);
+
+moment.tz.setDefault("Europe/Madrid");
+
+const Documento = require("../../models/Documento");
 const { uploadFile, getFileAndUrl } = require("./amazonS3");
+const Temporal = require("../../models/temporal");
 
 const createDocumentosServices = async (req) => {
   let documentos, uploadPath, data, document;
@@ -47,7 +58,6 @@ const createDocumentosServices = async (req) => {
       if (err) return console.log(err);
     });
 
-    //TODO: AMAZON
     data = {
       name,
       type: extension,
@@ -76,6 +86,7 @@ const createDocumentosServices = async (req) => {
   await document.updateOne({ url_local: fullUrl });
 
   // return document._id;
+
   return fullUrl;
 };
 
@@ -95,14 +106,41 @@ const downloadDocumentosServices = async (req) => {
   return data;
 };
 
-const GetUrlAmazonS3Services = async (req) => {
+const downloadDocumentosAmazonServices = async (req) => {
   const { id } = req.params;
 
-  const url = await getFileAndUrl(id);
-  return url;
+  const { id_amazon, name, type } = await Documento.findById({ _id: id });
+
+  if (!id_amazon) throw new Error("No es valido");
+
+  // obtengo url prefirmada
+  const url = await getFileAndUrl(id_amazon);
+  const randomName = uuidv4();
+
+  const pathFile = path.join(__dirname, "../../temp", randomName);
+  //obtengo documento de la url
+  const externalReq = await axios.get(url, { responseType: "stream" });
+
+  // guardo en un archivo local
+  await pipeline(externalReq.data, fs.createWriteStream(pathFile));
+
+  const temporalFile = new Temporal({
+    file: randomName,
+    date: moment().toDate(),
+  });
+
+  await temporalFile.save();
+
+  const filename = `${name}.${type}`;
+  const data = {
+    pathFile,
+    filename,
+  };
+
+  return data;
 };
 module.exports = {
   createDocumentosServices,
   downloadDocumentosServices,
-  GetUrlAmazonS3Services,
+  downloadDocumentosAmazonServices,
 };

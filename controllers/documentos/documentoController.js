@@ -1,7 +1,7 @@
 const {
   createDocumentosServices,
   downloadDocumentosServices,
-  GetUrlAmazonS3Services,
+  downloadDocumentosAmazonServices,
 } = require("../../services/documentos/documentosServices");
 
 const createDocumentosController = async (req, res) => {
@@ -13,12 +13,19 @@ const createDocumentosController = async (req, res) => {
     res.status(400).json({ errorMessage: error.message });
   }
 };
-const GetUrlAmazonS3Controller = async (req, res) => {
-  try {
-    const data = await GetUrlAmazonS3Services(req);
-    return res.status(201).json({ response: data });
+const  downloadDocumentosAmazonController = async (req, res) => {
+ try {
+    const { pathFile, filename } = await downloadDocumentosAmazonServices(req);
+    res.status(200).download(pathFile, filename, function (err) {
+      if (err) {
+        res
+          .status(err.status)
+          .json({ errorMessage: "No se encontro el archivo" });
+      } else {
+        // decrement a download credit, etc.
+      }
+    });
   } catch (error) {
-    console.log(error);
     res.status(400).json({ errorMessage: error.message });
   }
 };
@@ -42,5 +49,5 @@ const downloadDocumentosController = async (req = request, res) => {
 module.exports = {
   createDocumentosController,
   downloadDocumentosController,
-  GetUrlAmazonS3Controller,
+  downloadDocumentosAmazonController,
 };

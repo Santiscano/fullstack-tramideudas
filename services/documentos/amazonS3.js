@@ -22,7 +22,6 @@ const uploadFile = async (file, key) => {
     Bucket: process.env.AWS_BUCKET_NAME,
     Key: key, // id de mongo
     Body: stream,
-    ContentLength: 0,
   };
   // subir archivo
   const command = new PutObjectCommand(uploadParams);
