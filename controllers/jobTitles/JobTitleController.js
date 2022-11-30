@@ -33,7 +33,7 @@ const readJobTitleController = async (req, res) => {
 };
 const getAllJobTitleController = async (req, res) => {
   try {
-    const data = await getAllJobTitleServices();
+    const data = await getAllJobTitleServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

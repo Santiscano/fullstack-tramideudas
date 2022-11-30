@@ -36,7 +36,7 @@ const readRutaController = async (req, res) => {
 
 const getAllRutaController = async (req, res) => {
   try {
-    const data = await getAllRutaServices();
+    const data = await getAllRutaServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

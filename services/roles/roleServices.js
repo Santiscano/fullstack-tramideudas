@@ -10,8 +10,27 @@ const createRoleServices = async (body) => {
   return await new Role({ name }).save();
 };
 
-const getAllRoleServices = async () => {
-  return await Role.find();
+const getAllRoleServices = async (req) => {
+  let { limit = 30, page = 0 } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+
+  const params = { deleted: { $ne: true } };
+
+  const roles = await Role.find(params)
+    .skip(page * limit)
+    .limit(limit);
+
+  const count = await Role.countDocuments(params);
+
+  const data = {
+    total: count,
+    page: +page,
+    per_page: limit,
+    result: roles,
+  };
+
+  return data;
 };
 
 const updateRoleServices = async (params, body) => {

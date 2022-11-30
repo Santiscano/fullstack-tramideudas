@@ -43,7 +43,7 @@ const readAgentController = async (req, res) => {
 
 const getAllAgentController = async (req, res) => {
   try {
-    const data = await getAllAgentServices();
+    const data = await getAllAgentServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

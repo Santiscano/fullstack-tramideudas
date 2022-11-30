@@ -14,7 +14,7 @@ const router = Router();
 router.get("/", validateAccesToken, getAllAgentController);
 router.get("/:id", validateAccesToken, readAgentController);
 
-router.post("/", createAgentController);
+router.post("/",validateAccesToken, createAgentController);
 router.put("/:id", validateAccesToken, updateAgentController);
 router.put("/", validateAccesToken, updatePasswordController);
 

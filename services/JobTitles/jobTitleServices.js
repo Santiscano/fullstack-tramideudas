@@ -12,8 +12,27 @@ const createJobTitleServices = async (body) => {
   return await new JobTitle({ job_title }).save();
 };
 
-const getAllJobTitleServices = async () => {
-  return await JobTitle.find();
+const getAllJobTitleServices = async (req) => {
+  let { limit = 10, page = 0 } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+
+  const params = { deleted: { $ne: true } };
+
+  const jobsTitles = await JobTitle.find(params)
+    .skip(page * limit)
+    .limit(limit);
+
+  const count = await JobTitle.countDocuments(params);
+
+  const data = {
+    total: count,
+    page: +page,
+    per_page: limit,
+    result: jobsTitles,
+  };
+
+  return data;
 };
 
 const updateJobTitleServices = async (params, body) => {

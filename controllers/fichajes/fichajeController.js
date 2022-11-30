@@ -28,7 +28,7 @@ const updateFichajeJustificationsController = async (req, res) => {
 };
 const readFichasController = async (req, res) => {
   try {
-    const data = await readFichasServices(req);
+    const data = await readFichasServices();
     return res.status(200).json(data);
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
@@ -37,7 +37,7 @@ const readFichasController = async (req, res) => {
 
 const getAllFichasController = async (req, res) => {
   try {
-    const data = await getAllFichasServices();
+    const data = await getAllFichasServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

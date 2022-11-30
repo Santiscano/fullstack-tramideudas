@@ -21,8 +21,27 @@ const getHolidayServices = async (params) => {
 
 };
 
-const getAllHolidayServices = async (params, body) => {
-    return await Holiday.find();
+const getAllHolidayServices = async (req) => {
+  let { limit = 30, page = 0 } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+
+  const params = { deleted: { $ne: true } };
+
+  const holidays = await Holiday.find(params)
+    .skip(page * limit)
+    .limit(limit);
+
+  const count = await Holiday.countDocuments(params);
+
+  const data = {
+    total: count,
+    page: +page,
+    per_page: limit,
+    result: holidays,
+  };
+
+  return data;
 };
 
 module.exports = {

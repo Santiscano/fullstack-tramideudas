@@ -10,7 +10,7 @@ const createAgentServices = async (body) => {
     name_email,
     email,
     telephones,
-    document,
+    identity_document,
     workplace,
     schedule,
     job_title,
@@ -30,7 +30,7 @@ const createAgentServices = async (body) => {
     !username ||
     !password ||
     !schedule ||
-    !document ||
+    !identity_document ||
     !workplace ||
     !telephones ||
     !init_time ||
@@ -47,17 +47,17 @@ const createAgentServices = async (body) => {
 
   //TODO:VALIDAR MEJOR QUE EL EMAIL EL USER Y EL DOCUMENT SEAN UNICOS
 
-  const usernameValid = await Agente.findOne({
+  const usernameusernameEmailDocumentValidValid = await Agente.findOne({
     username: username,
     email: email,
-    document: document,
+    identity_document: identity_document,
   });
 
-  if (usernameValid)
+  if (usernameEmailDocumentValid)
     throw new Error(
-      "debes ingresar un username, email, dni unicos y el password "
+      "debes ingresar un username, email, dni unico y el password "
     );
-  const documentExist = await Agente.findOne({ document: document });
+  const documentExist = await Agente.findOne({ identity_document: identity_document });
 
   if (documentExist) throw new Error("El documento no es valido");
 
@@ -83,7 +83,7 @@ const createAgentServices = async (body) => {
     fullname,
     email,
     telephones,
-    document,
+    identity_document,
     workplace,
     schedule,
     entry_time: init_time,
@@ -139,13 +139,18 @@ const  updatePasswordServices = async (params, body) => {
   return agent;
 };
 const  updateAgentServices = async (req) => {
-  let { document, email, username, password, newPassword, isVacation, } = req.body;
+  let { identity_document, email, username, password, newPassword, isVacation, } = req.body;
   let {id} = req.params
 
+  // TODO: PREGUNTAR CUALES CAMPOS SON EDITABLES Y CUALES NO
+
+  // TODO: SI EL DOCUMENTO O EL MAIL SE CAMBIAN VERIFICAR QUE SEAN UNICOS
+  
+  // TODO: MEJORAR VALIDACIONES
 
   if (!email) throw new Error("envia tu email");
   if (!username) throw new Error("envia tu username");
-  if(!document) throw new Error('Debes enviar el documento')
+  if(!identity_document) throw new Error('Debes enviar el documento')
   if (!password) throw new Error("envia tu password");
   if (!newPassword) throw new Error("envia tu nuevo password");
   if (password === newPassword) throw new Error("Pon una nueva contraseña");
@@ -169,13 +174,11 @@ if (check) {
  let data = {
     password,
     email,
-    document,
     isVacation
   }
 
   return await Agente.findByIdAndUpdate(data);
   
-  return 'Ok'
 }
 
  

@@ -15,8 +15,24 @@ const createRutaServices = async (body) => {
   return await new Ruta(data).save();
 };
 
-const getAllRutaServices = async () => {
-  return await Ruta.find();
+const getAllRutaServices = async (req) => {
+  let { limit = 30, page = 0 } = req.query;
+  limit = parseInt(limit);
+  page = parseInt(page);
+  const rutas = await Ruta.find()
+    .skip(page * limit)
+    .limit(limit);
+
+  const count = await Ruta.countDocuments();
+
+  const data = {
+    total: count,
+    page: +page,
+    per_page: limit,
+    result: rutas,
+  };
+
+  return data;
 };
 
 const updateRutaServices = async (params, body) => {

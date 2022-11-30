@@ -33,7 +33,7 @@ const readRoleController = async (req, res) => {
 };
 const getAllRoleController = async (req, res) => {
   try {
-    const data = await getAllRoleServices();
+    const data = await getAllRoleServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });

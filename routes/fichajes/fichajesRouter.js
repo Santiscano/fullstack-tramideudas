@@ -10,8 +10,9 @@ const {
 
 const router = Router();
 
-router.get("/", validateAccesToken, getAllFichasController);
-router.get("/:id/:page/:limit", validateAccesToken, readFichasController);
+router.get("/:id", validateAccesToken, readFichasController);
+router.get("/:id/:page/:limit", validateAccesToken, getAllFichasController,
+);
 
 router.post("/", validateAccesToken, createFichasController);
 router.put("/:id", validateAccesToken, updateFichajeJustificationsController);

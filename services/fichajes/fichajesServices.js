@@ -89,7 +89,7 @@ const createFichasServices = async (req) => {
   }
 };
 
-const getAllFichasServices = async () => {
+const readFichasServices = async () => {
   closeAllFichajes();
 };
 
@@ -110,7 +110,7 @@ const updateFichajeJustificationsServices = async (params, body) => {
   return "Falta justificada";
 };
 
-const readFichasServices = async (req) => {
+const getAllFichasServices = async (req) => {
   const { daystart = 0, dayend = 0 } = req.query;
   let { limit = 30, page = 0 } = req.params;
   limit = parseInt(limit);

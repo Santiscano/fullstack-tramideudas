@@ -18,6 +18,7 @@ app.use(fileUpload());
 // Rutas
 app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
+app.use("/api/client/", require("./routes/clients/clientsRouter.js"))
 app.use("/api/documento/", require("./routes/documentos/documentosRouter.js"));
 app.use("/api/fichaje/", require("./routes/fichajes/fichajesRouter.js"));
 app.use("/api/google/", require("./routes/google/googleRouter.js"));
