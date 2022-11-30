@@ -16,9 +16,16 @@ const authLoginServices = async (body) => {
   // JWT
   let token;
   if (agent.isActive) token = generateAccessToken(agent._id, agent.role);
+  
+  let agentData = {
+    id: agent._id,
+    username: agent.username,
+    role: agent.role
+  } 
 
   return {
     token,
+    agentData
   };
 };
 

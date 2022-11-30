@@ -18,7 +18,7 @@ const createAgentController = async (req, res) => {
 
 const updateAgentController = async (req, res) => {
   try {
-    const data = await updateAgentServices(req.params, req.body);
+    const data = await updateAgentServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
@@ -26,7 +26,7 @@ const updateAgentController = async (req, res) => {
 };
 const updatePasswordController = async (req, res) => {
   try {
-    const data = await updatePasswordServices(req.body);
+    const data = await updatePasswordServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
@@ -35,7 +35,7 @@ const updatePasswordController = async (req, res) => {
 const readAgentController = async (req, res) => {
   try {
     const data = await readAgentServices(req.params);
-    return res.status(204).json({ response: data });
+    return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
   }

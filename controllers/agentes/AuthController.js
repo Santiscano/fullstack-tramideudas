@@ -8,7 +8,8 @@ const authLoginController = async (req, res = response) => {
         httpOnly: true,
       })
       .status(200)
-      .json({ response: "Bienvenido" });
+      // .json({ response: "Bienvenido" });
+      .json({ response: data.agentData });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
   }

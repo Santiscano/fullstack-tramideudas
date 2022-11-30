@@ -105,7 +105,7 @@ const getAllAgentServices = async () => {
   return agents;
 };
 
-const updateAgentServices = async (params, body) => {
+const  updatePasswordServices = async (params, body) => {
   const { id } = params;
   let { username, password, isVacation } = body;
 
@@ -130,7 +130,6 @@ const updateAgentServices = async (params, body) => {
   const data = {
     username,
     password,
-    isVacation,
   };
 
   const agent = await Agente.findByIdAndUpdate({ _id: id }, data, {
@@ -139,34 +138,47 @@ const updateAgentServices = async (params, body) => {
 
   return agent;
 };
-const updatePasswordServices = async (body) => {
-  let { document, email, username, password, newPassword } = body;
+const  updateAgentServices = async (req) => {
+  let { document, email, username, password, newPassword, isVacation, } = req.body;
+  let {id} = req.params
 
-  if (!document) throw new Error("envia el documento");
+
   if (!email) throw new Error("envia tu email");
   if (!username) throw new Error("envia tu username");
+  if(!document) throw new Error('Debes enviar el documento')
   if (!password) throw new Error("envia tu password");
   if (!newPassword) throw new Error("envia tu nuevo password");
   if (password === newPassword) throw new Error("Pon una nueva contraseña");
 
-  const agent = await Agente.findOne({ document, email, username });
+  const agent = await Agente.findOne({ _id: id});
 
   if (!agent) throw new Error("Revisa los datos enviados");
 
   const check = bcryptjs.compareSync(password, agent.password);
 
-  if (!check) {
-    throw new Error("La contraseña no coincide");
-  }
-
+  console.log(check)
+  
+  if (!check || check === false) throw new Error("La contraseña no coincide");
+ 
+if (check) {
+  
   const salt = bcryptjs.genSaltSync();
   password = bcryptjs.hashSync(newPassword, salt);
 
-  return await Agente.findByIdAndUpdate(
-    { _id: agent.id },
-    { password: password },
-    { new: true }
-  );
+
+ let data = {
+    password,
+    email,
+    document,
+    isVacation
+  }
+
+  return await Agente.findByIdAndUpdate(data);
+  
+  return 'Ok'
+}
+
+ 
 };
 
 const readAgentServices = async (params) => {

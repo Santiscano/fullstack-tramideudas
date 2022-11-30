@@ -22,7 +22,7 @@ const AgenteSchema = Schema({
     type: [String],
     required: [true, "el telefono es obligatorio"],
   },
-  document: {
+  identity_document: {
     type: String,
     required: [true, "el document es obligatorio"],
     unique: true,
@@ -39,6 +39,9 @@ const AgenteSchema = Schema({
   password: {
     type: String,
     required: [true, "La contraseña es obligatoria"],
+  },
+  image_profile:{
+    type: String
   },
   isVacation: {
     type: [Date],

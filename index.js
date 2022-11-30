@@ -1,5 +1,6 @@
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const cors = require('cors')
 const fileUpload = require("express-fileupload");
 const express = require("express");
 const app = express();
@@ -11,6 +12,7 @@ require("./utils/cronJob");
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(cors({ origin: 'http://localhost:3002', credentials: true, exposedHeaders: ['Set-Cookie', 'Date', 'ETag'] }))
 app.use(fileUpload());
 
 // Rutas
