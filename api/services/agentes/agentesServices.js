@@ -7,7 +7,7 @@ const createAgentServices = async (body) => {
   let {
     username,
     fullname,
-    name_email,
+    name_show_email,
     email,
     telephones,
     identity_document,
@@ -26,7 +26,7 @@ const createAgentServices = async (body) => {
   if (
     !email ||
     !fullname ||
-    !name_email ||
+    !name_show_email ||
     !username ||
     !password ||
     !schedule ||
@@ -47,17 +47,19 @@ const createAgentServices = async (body) => {
 
   //TODO:VALIDAR MEJOR QUE EL EMAIL EL USER Y EL DOCUMENT SEAN UNICOS
 
-  const usernameusernameEmailDocumentValidValid = await Agente.findOne({
+  const usernameEmailDocumentValidValid = await Agente.findOne({
     username: username,
     email: email,
     identity_document: identity_document,
   });
 
-  if (usernameEmailDocumentValid)
+  if (usernameEmailDocumentValidValid)
     throw new Error(
       "debes ingresar un username, email, dni unico y el password "
     );
-  const documentExist = await Agente.findOne({ identity_document: identity_document });
+  const documentExist = await Agente.findOne({
+    identity_document: identity_document,
+  });
 
   if (documentExist) throw new Error("El documento no es valido");
 
@@ -77,7 +79,7 @@ const createAgentServices = async (body) => {
   const role = await Role.findOne({ name: "user" });
   const data = {
     username,
-    name_show_email: name_email,
+    name_show_email,
     password,
     role: role._id,
     fullname,
@@ -105,7 +107,7 @@ const getAllAgentServices = async () => {
   return agents;
 };
 
-const  updatePasswordServices = async (params, body) => {
+const updatePasswordServices = async (params, body) => {
   const { id } = params;
   let { username, password, isVacation } = body;
 
@@ -138,50 +140,82 @@ const  updatePasswordServices = async (params, body) => {
 
   return agent;
 };
-const  updateAgentServices = async (req) => {
-  let { identity_document, email, username, password, newPassword, isVacation, } = req.body;
-  let {id} = req.params
+const updateAgentServices = async (req) => {
+  let {
+    identity_document,
+    email,
+    username,
+    password,
+    newPassword,
+    image_profile,
+    name_show_email,
+    role,
+    fullname,
+    telephones,
+    workplace,
+    schedule,
+    entry_time,
+    break_time,
+    daily_working_hours,
+    job_title,
+    isVacation,
+  } = req.body;
+
+  let { id } = req.params;
+  let data;
 
   // TODO: PREGUNTAR CUALES CAMPOS SON EDITABLES Y CUALES NO
 
   // TODO: SI EL DOCUMENTO O EL MAIL SE CAMBIAN VERIFICAR QUE SEAN UNICOS
-  
+
   // TODO: MEJORAR VALIDACIONES
 
   if (!email) throw new Error("envia tu email");
   if (!username) throw new Error("envia tu username");
-  if(!identity_document) throw new Error('Debes enviar el documento')
-  if (!password) throw new Error("envia tu password");
-  if (!newPassword) throw new Error("envia tu nuevo password");
-  if (password === newPassword) throw new Error("Pon una nueva contraseña");
+  if (!identity_document) throw new Error("Debes enviar el documento");
 
-  const agent = await Agente.findOne({ _id: id});
+  // if (!password) throw new Error("envia tu password");
+  // if (!newPassword) throw new Error("envia tu nuevo password");
+  // if (password === newPassword) throw new Error("Pon una nueva contraseña");
+
+  const agent = await Agente.findOne({ _id: id });
 
   if (!agent) throw new Error("Revisa los datos enviados");
 
-  const check = bcryptjs.compareSync(password, agent.password);
+  // const check = bcryptjs.compareSync(password, agent.password);
 
-  console.log(check)
-  
-  if (!check || check === false) throw new Error("La contraseña no coincide");
- 
-if (check) {
-  
-  const salt = bcryptjs.genSaltSync();
-  password = bcryptjs.hashSync(newPassword, salt);
+  // console.log(check);
 
+  // if (!check || check === false) throw new Error("La contraseña no coincide");
 
- let data = {
-    password,
-    email,
-    isVacation
-  }
+  // if (check) {
 
-  return await Agente.findByIdAndUpdate(data);
-  
-}
+  //   const salt = bcryptjs.genSaltSync();
+  //   password = bcryptjs.hashSync(newPassword, salt);
 
- 
+  //   data = {
+  //     password,
+  //     email,
+  //     isVacation
+  //   }
+  //   return await Agente.findByIdAndUpdate(data);
+  // }
+
+  data = {
+    image_profile,
+    name_show_email ,
+    role,
+    fullname,
+    telephones,
+    workplace,
+    schedule,
+    entry_time,
+    break_time,
+    daily_working_hours,
+    job_title,
+    isVacation,
+  };
+  return await Agente.findByIdAndUpdate({_id:agent.id},data);
 };
 
 const readAgentServices = async (params) => {

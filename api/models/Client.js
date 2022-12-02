@@ -6,7 +6,7 @@ const ClientSchema = Schema({
   surnames: {
     type: String,
   },
-  indentity_document: {
+  identity_document: {
     type: String,
   },
   telephone:[{
@@ -63,10 +63,16 @@ const ClientSchema = Schema({
   advertising_allowed: {
     type: Boolean,
   },
+  createdAt: {
+    type: Date,
+  },
+  modifiedAt: {
+    type: Date,
+  },
   deleted: {
     type: Boolean,
   },
-},{ versionKey: false,timestamps:true },);
+},{ versionKey: false},);
 
 const Client = model("Client", ClientSchema);
 

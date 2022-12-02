@@ -1,10 +1,16 @@
-const Agente = require("../../models/Agente");
+const nodemailer = require("nodemailer");
+require("moment-timezone");
+const moment = require("moment");
+const { google } = require("googleapis");
 const {
   generateUrl,
   generateToken,
 } = require("../../utils/googleAuthGenerate");
-const nodemailer = require("nodemailer");
-const { google } = require("googleapis");
+
+const Agente = require("../../models/Agente");
+const SaveEmail = require("../../models/SaveEmail");
+
+moment.tz.setDefault("Europe/Madrid");
 
 const authenticateGoogleGmailServices = async () => await generateUrl();
 
@@ -42,7 +48,6 @@ const sendGmailServices = async (params, body) => {
     GMAIL_SCOPES
   );
 
-  console.log(email);
   oAuth2Client.setCredentials({ refresh_token: google_refresh_token });
 
   const { token } = await oAuth2Client.getAccessToken();
@@ -69,6 +74,21 @@ const sendGmailServices = async (params, body) => {
   };
 
   const result = await transport.sendMail(mailOptions);
+  console.log(result);
+
+  if(result){
+
+const data = {
+  agente: agente._id,
+  to,
+  subject,
+  message,
+  date: moment().toDate()
+}
+
+   await new SaveEmail(data).save()
+  }
+
   return "Email Enviado";
 };
 

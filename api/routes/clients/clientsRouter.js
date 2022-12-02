@@ -11,7 +11,7 @@ const validateAccesToken = require("../../middlewares/validateAccessToken");
 
 const router = Router();
 
-router.get("/", validateAccesToken, getAllClientController);
+router.get("/:page/:limit", validateAccesToken, getAllClientController);
 router.get("/:id", validateAccesToken, readClientController);
 router.post("/",validateAccesToken, createClientController);
 router.put("/:id", validateAccesToken, updateClientController);

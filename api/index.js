@@ -1,6 +1,6 @@
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
-const cors = require('cors')
+const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const express = require("express");
 const app = express();
@@ -12,13 +12,21 @@ require("./utils/cronJob");
 
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:3002', credentials: true, exposedHeaders: ['Set-Cookie', 'Date', 'ETag'] }))
+app.use(
+  cors({
+    origin: "http://localhost:3002",
+    credentials: true,
+    exposedHeaders: ["Set-Cookie", "Date", "ETag"],
+  })
+);
 app.use(fileUpload());
 
 // Rutas
 app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
-app.use("/api/client/", require("./routes/clients/clientsRouter.js"))
+app.use("/api/client/", require("./routes/clients/clientsRouter.js"));
+app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
+app.use("/api/noteclient/", require("./routes/clients/noteClientsRouter.js"));
 app.use("/api/documento/", require("./routes/documentos/documentosRouter.js"));
 app.use("/api/fichaje/", require("./routes/fichajes/fichajesRouter.js"));
 app.use("/api/google/", require("./routes/google/googleRouter.js"));
