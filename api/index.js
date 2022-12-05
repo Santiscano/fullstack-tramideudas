@@ -25,6 +25,7 @@ app.use(fileUpload());
 app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
 app.use("/api/client/", require("./routes/clients/clientsRouter.js"));
+app.use("/api/expedientes/", require("./routes/expedientes/expedientesRouter.js"));
 app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
 app.use("/api/noteclient/", require("./routes/clients/noteClientsRouter.js"));
 app.use("/api/documento/", require("./routes/documentos/documentosRouter.js"));

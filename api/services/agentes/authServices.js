@@ -20,12 +20,19 @@ const authLoginServices = async (body) => {
 
 
 
-  let agentData = {
-    id: agent._id,
-    username: agent.username,
-    role: agent.role
-  } 
-  return agent;
+  // let data = {
+  //   id: agent._id,
+  //   username: agent.username,
+  //   role: agent.role
+  // } 
+
+
+  let data = {
+    agent,
+    token,
+  }
+
+  return data;
 
 };
 
