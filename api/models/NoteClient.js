@@ -1,5 +1,5 @@
 const { Schema, model } = require("mongoose");
-const HistoryChangeSchema = Schema({
+const NoteClientSchema = Schema({
     client: {
         type: Schema.Types.ObjectId,
         ref: "Client",
@@ -7,13 +7,12 @@ const HistoryChangeSchema = Schema({
   note: {
     type:String
   },
-
   agente: {
     type: Schema.Types.ObjectId,
     ref: "Agente",
   },
 });
 
-const HistoryChange = model("HistoryChange", HistoryChangeSchema);
+const NoteClient = model("NoteClient", NoteClientSchema);
 
-module.exports = HistoryChange;
+module.exports = NoteClient;

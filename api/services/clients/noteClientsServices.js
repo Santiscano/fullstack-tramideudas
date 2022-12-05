@@ -1,47 +1,103 @@
-const createNoteClientsServices = async (body) => {
-    console.log('Nota');
+const mongoose = require("mongoose");
+const Client = require("../../models/Client");
+const Agente = require("../../models/Agente");
+const NoteClient = require("../../models/NoteClient");
+const createNoteClientsServices = async (req) => {
+  const agentID = req.userId;
+  const { cliente, note } = req.body;
+
+  console.log(cliente, note, agentID);
+
+  if (!cliente)
+    throw new Error("Debes especificar para que cliente es la nota");
+  if (!note) throw new Error("Debes enviar una nota");
+
+  const clienteDB = await Client.findOne({ _id: cliente });
+  const agentDB = await Agente.findOne({ _id: agentID });
+
+  if (!clienteDB) throw new Error("ese cliente no se encuentra");
+
+  const data = {
+    agente: agentDB._id,
+    note,
+    client: clienteDB._id,
+  };
+  new NoteClient(data).save();
+
+  return "Nota creada con exito";
 };
 
 const getAllNoteClientsServices = async (req) => {
+  let { limit = 30, page = 0 } = req.params;
+  limit = parseInt(limit);
+  page = parseInt(page);
 
-};
-const updateNoteClientsServices = async (req) => {
+  const search = Object.keys(req.query);
+  let query = {};
 
+  search.forEach((key) => {
+    if (key !== "note") {
+      console.log(key);
 
-  const getUpdatedKeys = (oldData, newData) => {
-    const data = uniq([...Object.keys(oldData), ...Object.keys(newData)]);
-    const keys = [];
-    for (const key of data) {
-      if (!isEqual(oldData[key], newData[key])) {
-        keys.push(key);
+      if (mongoose.isValidObjectId(req.query[key])) {
+        query[key] = req.query[key];
+      } else {
+        query[key] = { $regex: req.query[key], $options: "i" };
       }
     }
-    return keys;
+  });
+
+  const notes = await NoteClient.find(query)
+    .skip(page * limit)
+    .limit(limit)
+    .lean();
+
+  const count = await NoteClient.countDocuments(query);
+
+  const data = {
+    total: count,
+    page: +page,
+    per_page: limit,
+    result: notes,
   };
-  let updateList = getUpdatedKeys(client.toObject(), newData.toObject());
 
-  console.log(updateList);
+  return data;
+};
 
-  dataHistory = {
-    agente,
-    update: {},
-    client: client._id,
-    date: moment().toDate(),
-  };
+const updateNoteClientsServices = async (req) => {
+  const { id } = req.params;
 
-  new HistoryChange(dataHistory).save();
+  const noteDB = await NoteClient.findOne({ _id: id });
+  const { note } = req.body;
+
+  if (!note) throw new Error("Debes enviar la nota");
+
+  await noteDB.updateOne({ note });
+
+  return "Nota actualizada";
 };
 
 const readNoteClientsServices = async (params) => {
+  const { id } = params;
 
+  const noteDB = await NoteClient.findOne({ _id: id });
+  if (!id) throw new Error("debes enviar el id de la nota");
+  if (!noteDB) throw new Error("no existe esa nota");
+
+  return noteDB;
 };
 const deleteNoteClientsServices = async (params) => {
+  const { id } = params;
 
+  const data = await NoteClient.findOneAndDelete({ _id: id });
+  if (!data) throw new Error("verifica la nota que estas enviando");
+
+  return "Nota eliminada";
 };
 module.exports = {
-    createNoteClientsServices,
-    getAllNoteClientsServices,
-    updateNoteClientsServices,
-    readNoteClientsServices,
-    deleteNoteClientsServices,
+  createNoteClientsServices,
+  getAllNoteClientsServices,
+  updateNoteClientsServices,
+  readNoteClientsServices,
+  deleteNoteClientsServices,
 };

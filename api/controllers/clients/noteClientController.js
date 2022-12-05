@@ -8,7 +8,7 @@ const {
   
   const createNoteClientController = async (req, res) => {
     try {
-      const data = await createNoteClientsServices(req.body);
+      const data = await createNoteClientsServices(req);
       return res.status(201).json({ response: data });
     } catch (error) {
       res.status(400).json({ errorMessage: error.message });

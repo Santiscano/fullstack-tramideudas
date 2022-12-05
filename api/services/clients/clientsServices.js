@@ -153,6 +153,8 @@ const readClientServices = async (params) => {
 
   const client = await Client.findById(id);
 
+  if (!client) throw new Error('no existe ese cliente')
+
   return client;
 };
 const deleteClientServices = async (params) => {
