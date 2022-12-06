@@ -1,14 +1,17 @@
+const moment = require("moment");
+require("moment-timezone");
 const Expediente = require("../../models/Expediente");
 const Product = require("../../models/Product");
+const { previsionPagos } = require("./previsionPagos");
+
+moment.tz.setDefault("Europe/Madrid");
 
 const regexInteger = new RegExp(/^([+-]?[1-9]\d*|0)$/);
-const regexDouble = new RegExp(/\-?\d+\.\d+/);
 
 const createExpedienteServices = async (req) => {
   let {
     fractioned,
     quotas,
-    price,
     product,
     client,
     unsigned_contract,
@@ -19,38 +22,39 @@ const createExpedienteServices = async (req) => {
 
   if (!client) throw new Error("Debes enviar el cliente");
 
-  if (product) {
-    if (!price) throw new Error("debes enviar el precio");
-  }
-  if (price) {
-    const result = regexDouble.test(price);
-    if (!result) throw new Error("el precio debe ser un double");
-  }
+  const productDB = await Product.findOne({ _id: product });
 
-  const producto = await Product.findOne({_id:product})
+  if (!productDB) throw new Error("ese producto no existe");
 
-  if(!producto) throw new Error('Ese producto no existe')
-
-  if (fractioned) {
-    if (!quotas) throw new Error("Envia las cuotas");
-    const result = regexInteger.test(quotas);
-    if (!result) throw new Error("quotas debe ser un entero");
+  if (productDB.isBankable === true) {
+    if (fractioned) {
+      if (!quotas) throw new Error("Envia las cuotas");
+      const result = regexInteger.test(quotas);
+      if (!result) throw new Error("quotas debe ser un entero");
+    }
+    fractioned =
+      fractioned !== true ? { fractioned: false } : { fractioned, quotas };
+  } else {
+    fractioned = { fractioned: false };
   }
-  fractioned =
-    fractioned !== true ? { fractioned: false } : { fractioned, quotas };
 
   const data = {
     client,
-    product,
-    price,
+    product: productDB._id,
+    price: productDB.price,
     ...fractioned,
+    date: moment().toDate(),
     unsigned_contract,
     signed_contract,
     unsigned_authorizations,
     signed_authorizations,
   };
 
-  await new Expediente(data).save();
+  const newExpediente = await new Expediente(data).save();
+
+  if (newExpediente.fractioned === true) {
+    previsionPagos(newExpediente);
+  }
 
   return data;
 };

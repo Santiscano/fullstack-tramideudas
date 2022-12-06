@@ -18,6 +18,9 @@ const ExpedienteSchema = Schema({
   quotas: {
     type: Number,
   },
+  date:{
+    type:Date
+  },
   unsigned_contract: {
     type: String,
   },
