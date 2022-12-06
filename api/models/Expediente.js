@@ -6,7 +6,8 @@ const ExpedienteSchema = Schema({
     ref: "Client",
   },
   product: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "Expediente"
   },
   price: {
     type: Number,

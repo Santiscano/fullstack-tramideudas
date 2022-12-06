@@ -1,3 +1,15 @@
+const { v4: uuidv4 } = require("uuid");
+const moment = require("moment");
+require("moment-timezone");
+const path = require("path");
+const fs = require("fs");
+const axios = require("axios");
+const util = require("util");
+const stream = require("stream");
+const pipeline = util.promisify(stream.pipeline);
+
+moment.tz.setDefault("Europe/Madrid");
+
 const Agente = require("../../models/Agente");
 const bcryptjs = require("bcryptjs");
 const Role = require("../../models/Role");
@@ -140,6 +152,39 @@ const updatePasswordServices = async (params, body) => {
 
   return agent;
 };
+const updateAgentAvatarServices = async (req) => {
+  const { id } = req.params;
+
+  let avatar, uploadPath;
+
+  if (!req.files || Object.keys(req.files).length === 0)
+    throw new Error("No enviaste ninguna imagen");
+
+  avatar = req.files.avatar[0] || req.files.avatar;
+
+  if (!avatar) throw new Error("No enviaste ninguna imagen");
+
+  if (Object.keys(req.files).length >= 2)
+    throw new Error("Envia solo una imagen para tu avatar");
+  const extension = avatar.name.split(".").at(-1);
+  const newName = uuidv4() + "." + extension;
+
+  console.log(avatar, newName);
+
+  uploadPath = path.join(__dirname, "../../uploads/avatar/", newName);
+  //subo los archivos al path
+  avatar.mv(uploadPath, (err) => {
+    if (err) return console.log(err);
+  });
+
+  const agent = await Agente.findByIdAndUpdate(
+    { _id: id },
+    { avatar: uploadPath },
+    { new: true }
+  );
+
+  return agent;
+};
 const updateAgentServices = async (req) => {
   let {
     identity_document,
@@ -203,7 +248,7 @@ const updateAgentServices = async (req) => {
 
   data = {
     image_profile,
-    name_show_email ,
+    name_show_email,
     role,
     fullname,
     telephones,
@@ -215,7 +260,7 @@ const updateAgentServices = async (req) => {
     job_title,
     isVacation,
   };
-  return await Agente.findByIdAndUpdate({_id:agent.id},data);
+  return await Agente.findByIdAndUpdate({ _id: agent.id }, data);
 };
 
 const readAgentServices = async (params) => {
@@ -241,4 +286,5 @@ module.exports = {
   getAllAgentServices,
   deleteAgentServices,
   updatePasswordServices,
+  updateAgentAvatarServices,
 };

@@ -26,6 +26,7 @@ app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
 app.use("/api/client/", require("./routes/clients/clientsRouter.js"));
 app.use("/api/expedientes/", require("./routes/expedientes/expedientesRouter.js"));
+app.use("/api/noteexpedientes/", require("./routes/expedientes/noteExpedientesRouter.js"));
 app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
 app.use("/api/noteclient/", require("./routes/clients/noteClientsRouter.js"));
 app.use("/api/documento/", require("./routes/documentos/documentosRouter.js"));
@@ -33,6 +34,7 @@ app.use("/api/fichaje/", require("./routes/fichajes/fichajesRouter.js"));
 app.use("/api/google/", require("./routes/google/googleRouter.js"));
 app.use("/api/holiday/", require("./routes/holidays/holidaysRoute.js"));
 app.use("/api/jobtitle/", require("./routes/jobTitles/jobTitlesRouter.js"));
+app.use("/api/products/", require("./routes/products/productsRouter.js"));
 app.use("/api/role/", require("./routes/roles/rolesRouter.js"));
 app.use("/api/ruta/", require("./routes/rutas/rutas.js"));
 

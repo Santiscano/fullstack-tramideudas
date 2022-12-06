@@ -1,4 +1,5 @@
 const Expediente = require("../../models/Expediente");
+const Product = require("../../models/Product");
 
 const regexInteger = new RegExp(/^([+-]?[1-9]\d*|0)$/);
 const regexDouble = new RegExp(/\-?\d+\.\d+/);
@@ -25,6 +26,10 @@ const createExpedienteServices = async (req) => {
     const result = regexDouble.test(price);
     if (!result) throw new Error("el precio debe ser un double");
   }
+
+  const producto = await Product.findOne({_id:product})
+
+  if(!producto) throw new Error('Ese producto no existe')
 
   if (fractioned) {
     if (!quotas) throw new Error("Envia las cuotas");

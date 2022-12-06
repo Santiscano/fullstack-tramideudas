@@ -40,7 +40,7 @@ const AgenteSchema = Schema({
     type: String,
     required: [true, "La contraseña es obligatoria"],
   },
-  image_profile:{
+  avatar:{
     type: String
   },
   isVacation: {
