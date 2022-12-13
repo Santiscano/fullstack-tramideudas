@@ -67,19 +67,6 @@ const getAllNoteClientsServices = async (req) => {
   return data;
 };
 
-const updateNoteClientsServices = async (req) => {
-  const { id } = req.params;
-
-  const noteDB = await NoteClient.findOne({ _id: id });
-  const { note } = req.body;
-
-  if (!note) throw new Error("Debes enviar la nota");
-
-  await noteDB.updateOne({ note });
-
-  return "Nota actualizada";
-};
-
 const readNoteClientsServices = async (params) => {
 
   const { id } = params;
@@ -94,6 +81,5 @@ const readNoteClientsServices = async (params) => {
 module.exports = {
   createNoteClientsServices,
   getAllNoteClientsServices,
-  updateNoteClientsServices,
   readNoteClientsServices,
 };

@@ -1,7 +1,6 @@
 const {
     createNoteClientsServices,
     getAllNoteClientsServices,
-    updateNoteClientsServices,
     readNoteClientsServices,
   } = require("../../services/clients/noteClientsServices");
   
@@ -14,14 +13,6 @@ const {
     }
   };
   
-  const updateNoteClientController = async (req, res) => {
-    try {
-      const data = await updateNoteClientsServices(req);
-      return res.status(200).json({ response: data });
-    } catch (error) {
-      res.status(400).json({ errorMessage: error.message });
-    }
-  };
   const readNoteClientController = async (req, res) => {
     try {
       const data = await readNoteClientsServices(req.params);
@@ -44,5 +35,4 @@ const {
     createNoteClientController,
     readNoteClientController,
     getAllNoteClientController,
-    updateNoteClientController,
   };

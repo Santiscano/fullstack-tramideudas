@@ -1,7 +1,6 @@
 const {
   createNoteExpedientestServices,
   getAllNoteExpedientestServices,
-  updateNoteExpedientestServices,
   readNoteExpedientestServices,
 } = require("../../services/expedientes/NoteExpedientesServices");
 
@@ -9,15 +8,6 @@ const createNoteExpedienteController = async (req, res) => {
   try {
     const data = await createNoteExpedientestServices(req);
     return res.status(201).json({ response: data });
-  } catch (error) {
-    res.status(400).json({ errorMessage: error.message });
-  }
-};
-
-const updateNoteExpedienteController = async (req, res) => {
-  try {
-    const data = await updateNoteExpedientestServices(req);
-    return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
   }

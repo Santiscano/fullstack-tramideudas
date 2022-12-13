@@ -33,14 +33,6 @@ const getAllNoteExpedientestServices = async (req) => {
 
   return data;
 };
-const updateNoteExpedientestServices = async (req) => {
-  const {id} = req.params
-
-  const note = await NoteExpediente.findByIdAndUpdate({_id:id},{...req.body},{new:true});
-
-  console.log(note);
- return note
-};
 const readNoteExpedientestServices = async (req) => {
   const { id } = req.params;
 
@@ -56,6 +48,5 @@ const readNoteExpedientestServices = async (req) => {
 module.exports = {
   createNoteExpedientestServices,
   getAllNoteExpedientestServices,
-  updateNoteExpedientestServices,
   readNoteExpedientestServices,
 };

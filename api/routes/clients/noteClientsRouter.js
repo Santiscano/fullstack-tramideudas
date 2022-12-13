@@ -13,6 +13,5 @@ const router = Router();
 router.get("/:page/:limit", validateAccesToken, getAllNoteClientController);
 router.get("/:id", validateAccesToken, readNoteClientController);
 router.post("/",validateAccesToken, createNoteClientController);
-router.put("/:id", validateAccesToken, updateNoteClientController);
 
 module.exports = router;
