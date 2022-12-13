@@ -24,6 +24,12 @@ const ExpedienteSchema = Schema({
   date:{
     type:Date
   },
+  paymentStatus: {
+    // Estado de pago
+    type: String,
+    default: "Pendiente",
+    enum: ["Pagado", "Pendiente"],
+  },
   unsigned_contract: {
     type: String,
   },

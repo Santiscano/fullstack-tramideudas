@@ -33,6 +33,5 @@ const getAllNoteExpedienteController = async (req, res) => {
 module.exports = {
   createNoteExpedienteController,
   getAllNoteExpedienteController,
-  updateNoteExpedienteController,
   readNoteExpedienteController,
 };

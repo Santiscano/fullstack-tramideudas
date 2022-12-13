@@ -30,6 +30,7 @@ app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
 app.use("/api/client/", require("./routes/clients/clientsRouter.js"));
 app.use("/api/expedientes/", require("./routes/expedientes/expedientesRouter.js"));
+app.use("/api/pagos/", require("./routes/payments/paymentsRouter.js"));
 app.use("/api/previsionpagos/", require("./routes/expedientes/previsionPagosRouter.js"));
 app.use("/api/noteexpedientes/", require("./routes/expedientes/noteExpedientesRouter.js"));
 app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
