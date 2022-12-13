@@ -7,6 +7,10 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 const connectDB = require("./db/DBconfig");
 
+const moment = require("moment-timezone");
+moment.tz.setDefault("Europe/Madrid");
+process.env.TZ='Europe/Madrid'
+
 // cron job
 require("./utils/cronJob");
 
@@ -26,6 +30,7 @@ app.use("/api/agente/", require("./routes/agentes/agentesRouter.js"));
 app.use("/api/auth/", require("./routes/agentes/authRouter.js"));
 app.use("/api/client/", require("./routes/clients/clientsRouter.js"));
 app.use("/api/expedientes/", require("./routes/expedientes/expedientesRouter.js"));
+app.use("/api/previsionpagos/", require("./routes/expedientes/previsionPagosRouter.js"));
 app.use("/api/noteexpedientes/", require("./routes/expedientes/noteExpedientesRouter.js"));
 app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
 app.use("/api/noteclient/", require("./routes/clients/noteClientsRouter.js"));

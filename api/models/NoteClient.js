@@ -11,6 +11,9 @@ const NoteClientSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: "Agente",
   },
+  createdAt: {
+    type: Date
+  }
 });
 
 const NoteClient = model("NoteClient", NoteClientSchema);

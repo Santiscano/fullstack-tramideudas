@@ -1,5 +1,4 @@
-const moment = require("moment");
-require("moment-timezone");
+const moment = require("moment-timezone");
 const Expediente = require("../../models/Expediente");
 const Product = require("../../models/Product");
 const { previsionPagos } = require("./previsionPagos");
@@ -9,22 +8,31 @@ moment.tz.setDefault("Europe/Madrid");
 const regexInteger = new RegExp(/^([+-]?[1-9]\d*|0)$/);
 
 const createExpedienteServices = async (req) => {
+  //TODO: se tienen que poder subir documentos(se guardaran como array de documentos)
+  console.log(req.body);
   let {
     fractioned,
     quotas,
     product,
+    price,
     client,
+    initial_date,
     unsigned_contract,
     signed_contract,
     unsigned_authorizations,
     signed_authorizations,
   } = req.body;
 
+  fractioned = fractioned === 'true' 
+  price = parseFloat(price)
+  quotas = parseInt(quotas)
+
+console.log(fractioned);
   if (!client) throw new Error("Debes enviar el cliente");
 
   const productDB = await Product.findOne({ _id: product });
 
-  if (!productDB) throw new Error("ese producto no existe");
+  if (!productDB) throw new Error("ese producto no existe o no se encuentra");
 
   if (productDB.isBankable === true) {
     if (fractioned) {
@@ -34,16 +42,23 @@ const createExpedienteServices = async (req) => {
     }
     fractioned =
       fractioned !== true ? { fractioned: false } : { fractioned, quotas };
-  } else {
-    fractioned = { fractioned: false };
-  }
+  } 
 
+  const initial = moment(initial_date,"DD/MM/YYYY").format()
+
+  const string = moment().toString()
+
+ 
+
+
+  console.log(initial,string);
   const data = {
     client,
     product: productDB._id,
-    price: productDB.price,
+    price:  price ? price : price = productDB.price,
     ...fractioned,
     date: moment().toDate(),
+    initial_date: initial,
     unsigned_contract,
     signed_contract,
     unsigned_authorizations,
@@ -79,15 +94,15 @@ const getAllExpedienteServices = async (req) => {
   return data;
 };
 
-const updateExpedienteServices = async (req) => {};
+const updateExpedienteServices = async (req) => {
+  // TODO: se puede editar el estado
+};
 const readExpedienteServices = async (req) => {
   const { id } = req.params;
 
   if (!id) throw new Error("Envia el id del expediente");
 
   const data = await Expediente.findOne({ _id: id }).lean();
-
-  console.log(data);
 
   if (!data) throw new Error("No existe ese expendiente");
 

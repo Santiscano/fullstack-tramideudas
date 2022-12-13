@@ -3,7 +3,6 @@ const {
     getAllNoteClientsServices,
     updateNoteClientsServices,
     readNoteClientsServices,
-    deleteNoteClientsServices,
   } = require("../../services/clients/noteClientsServices");
   
   const createNoteClientController = async (req, res) => {
@@ -40,19 +39,10 @@ const {
       res.status(400).json({ errorMessage: error.message });
     }
   };
-  const deleteNoteClientController = async (req, res) => {
-    try {
-      const data = await deleteNoteClientsServices(req.params);
-      return res.status(200).json({ response: data });
-    } catch (error) {
-      res.status(400).json({ errorMessage: error.message });
-    }
-  };
   
   module.exports = {
     createNoteClientController,
     readNoteClientController,
     getAllNoteClientController,
     updateNoteClientController,
-    deleteNoteClientController,
   };

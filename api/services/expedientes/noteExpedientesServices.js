@@ -1,3 +1,4 @@
+const moment = require('moment-timezone');
 const NoteExpediente = require("../../models/NoteExpediente");
 
 const createNoteExpedientestServices = async (req) => {
@@ -7,7 +8,7 @@ const createNoteExpedientestServices = async (req) => {
   if (!client || !expediente || !note)
     throw new Error("Debes enviar el cliente, expediente y la nota");
 
-  await new NoteExpediente({ agent, client, expediente, note }).save();
+  await new NoteExpediente({ agent, client, expediente, note,createdAt: moment().toDate()}).save();
 
   return "Creado";
 };
@@ -18,7 +19,8 @@ const getAllNoteExpedientestServices = async (req) => {
   page = parseInt(page);
   const nota = await NoteExpediente.find()
     .skip(page * limit)
-    .limit(limit);
+    .limit(limit)
+    .sort({createdAt:-1});
 
   const count = await NoteExpediente.countDocuments();
 
@@ -51,24 +53,9 @@ const readNoteExpedientestServices = async (req) => {
   return data;
 };
 
-const deleteNoteExpedientestServices = async (req) => {
-  const { id } = req.params;
-
-  if (!id) throw new Error("Envia el id del nota");
-
-  const data = await NoteExpediente.findByIdAndRemove(
-    { _id: id },
-    { new: true }
-  ).lean();
-
-  if (!data) throw new Error("Esa nota no se encuentra");
-
-  return data;
-};
 module.exports = {
   createNoteExpedientestServices,
   getAllNoteExpedientestServices,
   updateNoteExpedientestServices,
   readNoteExpedientestServices,
-  deleteNoteExpedientestServices,
 };

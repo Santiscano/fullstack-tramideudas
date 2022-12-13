@@ -5,11 +5,12 @@ require("moment-timezone");
 moment.tz.setDefault("Europe/Madrid");
 
 const previsionPagos = async (data) => {
-  let { date, _id, client, price, quotas } = data;
+  let { initial_date, _id, client, price, quotas } = data;
   const total = price / quotas;
 
   for (let i = 0; i < quotas; i++) {
-    const dates = moment(date).add(i, "M");
+    const dates = moment(initial_date).add(i, "M");
+    console.log(dates,'Dates');
 
     await new PrevisionPago({
       quoteNumber: i + 1,
@@ -21,4 +22,28 @@ const previsionPagos = async (data) => {
   }
 };
 
-module.exports = { previsionPagos };
+
+const reprevisionPagos = async (data,newDate) => {
+
+  // TODO: verificar por que guarda con una hora de diferencia
+
+   const initial_date = moment(newDate,'DD-MM-YYYY')
+
+
+  data.forEach(async(previsionPago,i) => {
+    const dates = moment(initial_date).add(i, "M");
+
+    const {quoteNumber,_id,date,total,...rest} = previsionPago
+   
+    // console.log(dates);
+    console.log(dates);
+    await PrevisionPago.findByIdAndUpdate(_id,{
+        date:dates,
+        ...rest
+    })
+
+  });
+
+}
+
+module.exports = { previsionPagos,reprevisionPagos };

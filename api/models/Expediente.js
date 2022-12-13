@@ -18,6 +18,9 @@ const ExpedienteSchema = Schema({
   quotas: {
     type: Number,
   },
+  initial_date:{
+    type:Date
+  },
   date:{
     type:Date
   },

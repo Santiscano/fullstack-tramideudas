@@ -1,3 +1,4 @@
+const moment = require('moment-timezone')
 const mongoose = require("mongoose");
 const Client = require("../../models/Client");
 const Agente = require("../../models/Agente");
@@ -21,6 +22,7 @@ const createNoteClientsServices = async (req) => {
     agente: agentDB._id,
     note,
     client: clienteDB._id,
+    createdAt: moment().toDate()
   };
   new NoteClient(data).save();
 
@@ -50,6 +52,7 @@ const getAllNoteClientsServices = async (req) => {
   const notes = await NoteClient.find(query)
     .skip(page * limit)
     .limit(limit)
+    .sort({createdAt:-1})
     .lean();
 
   const count = await NoteClient.countDocuments(query);
@@ -78,6 +81,7 @@ const updateNoteClientsServices = async (req) => {
 };
 
 const readNoteClientsServices = async (params) => {
+
   const { id } = params;
 
   const noteDB = await NoteClient.findOne({ _id: id });
@@ -86,18 +90,10 @@ const readNoteClientsServices = async (params) => {
 
   return noteDB;
 };
-const deleteNoteClientsServices = async (params) => {
-  const { id } = params;
 
-  const data = await NoteClient.findOneAndDelete({ _id: id });
-  if (!data) throw new Error("verifica la nota que estas enviando");
-
-  return "Nota eliminada";
-};
 module.exports = {
   createNoteClientsServices,
   getAllNoteClientsServices,
   updateNoteClientsServices,
   readNoteClientsServices,
-  deleteNoteClientsServices,
 };

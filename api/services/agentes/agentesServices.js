@@ -24,7 +24,6 @@ const createAgentServices = async (body) => {
     telephones,
     identity_document,
     workplace,
-    schedule,
     job_title,
     password,
     init_time,
@@ -41,7 +40,6 @@ const createAgentServices = async (body) => {
     !name_show_email ||
     !username ||
     !password ||
-    !schedule ||
     !identity_document ||
     !workplace ||
     !telephones ||
@@ -57,23 +55,26 @@ const createAgentServices = async (body) => {
 
   if (!regxGmail.test(email)) throw new Error("Debe ser un gmail valido");
 
-  //TODO:VALIDAR MEJOR QUE EL EMAIL EL USER Y EL DOCUMENT SEAN UNICOS
-
-  const usernameEmailDocumentValidValid = await Agente.findOne({
-    username: username,
-    email: email,
-    identity_document: identity_document,
+  const usernameValid = await Agente.findOne({
+    username,
+  });
+  const emailValid = await Agente.findOne({
+    email,
   });
 
-  if (usernameEmailDocumentValidValid)
+  if (usernameValid)
     throw new Error(
-      "debes ingresar un username, email, dni unico y el password "
+      "debes ingresar un username unico"
+    );
+  if (emailValid)
+    throw new Error(
+      "Ese mail no esta disponible"
     );
   const documentExist = await Agente.findOne({
-    identity_document: identity_document,
+    identity_document,
   });
 
-  if (documentExist) throw new Error("El documento no es valido");
+  if (documentExist) throw new Error("Ese documento de identidad no es valido");
 
   // existe cargo
 
@@ -99,7 +100,6 @@ const createAgentServices = async (body) => {
     telephones,
     identity_document,
     workplace,
-    schedule,
     entry_time: init_time,
     break_time,
     daily_working_hours,
@@ -186,6 +186,7 @@ const updateAgentAvatarServices = async (req) => {
   return agent;
 };
 const updateAgentServices = async (req) => {
+
   let {
     identity_document,
     email,
@@ -208,12 +209,6 @@ const updateAgentServices = async (req) => {
 
   let { id } = req.params;
   let data;
-
-  // TODO: PREGUNTAR CUALES CAMPOS SON EDITABLES Y CUALES NO
-
-  // TODO: SI EL DOCUMENTO O EL MAIL SE CAMBIAN VERIFICAR QUE SEAN UNICOS
-
-  // TODO: MEJORAR VALIDACIONES
 
   if (!email) throw new Error("envia tu email");
   if (!username) throw new Error("envia tu username");
@@ -267,6 +262,8 @@ const readAgentServices = async (params) => {
   const { id } = params;
 
   const agent = await Agente.findById(id);
+
+  if (!agent) throw new Error('Ese agente no existe')
 
   return agent;
 };

@@ -32,10 +32,6 @@ const AgenteSchema = Schema({
     required: [true, "el workplace es obligatorio"],
     emun: ["MADRID", "REMOTO"],
   },
-  schedule: {
-    type: String,
-    required: [true, "los horarios son obligatorios"],
-  },
   password: {
     type: String,
     required: [true, "La contraseña es obligatoria"],
