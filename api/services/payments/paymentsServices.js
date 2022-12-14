@@ -5,8 +5,7 @@ const { uploadDocument } = require("../../utils/uploadDocument");
 
 const createPaymentsServices = async (req) => {
 
-    //TODO: TIENE QUE PODER SUBIRSE DOCUMENTOS (CREAR EN UTILS PARA REUTILIZAR)
-  let { expediente, amount, type, method, note, receipt, date } = req.body;
+  let { expediente, amount, type, method, note, date } = req.body;
   let data,
     documento,
     payments = 0;
@@ -19,14 +18,11 @@ const createPaymentsServices = async (req) => {
         name: `comprobante-${method}-${moment(date).format("DD-MM-YYYY")}`,
         category:'comprobantes'
          }
-
-      
     documento = await uploadDocument(req,file,dataFile)
-
-
     }
-
   const expedienteExist = await Expediente.findOne({ _id: expediente });
+
+  if (!expedienteExist) throw new Error('Ese expediente no existe');
 
   if (amount > expedienteExist.price)
     throw new Error("El pago actual sobrepasa el precio del expediente");
@@ -48,12 +44,10 @@ const createPaymentsServices = async (req) => {
     totalPayments.forEach((payment) => (payments += payment.amount));
 
     const restPrice = expedienteExist.price - payments;
-
-    // TODO: validar si completo el pago se cambie el status del expendiente a "Pagado"
-    console.log(restPrice);
-    if (restPrice <= 0) await expedienteExist.updateOne({ paymentStatus: "Pagado" });
-
+    const total = restPrice - amount
+    
     if (restPrice < amount) throw new Error(`El monto es mayor al precio restante: ${restPrice}`);
+    if (total === 0 ) await expedienteExist.updateOne({ paymentStatus: "Pagado" });
   }
 
   if (type === 'reembolso') {
@@ -69,18 +63,27 @@ const createPaymentsServices = async (req) => {
     date,
     receipt: documento && documento
   };
-
-
-  return await new Payment(data).save();
-
+   return await new Payment(data).save();
 };
 
-const getAllNoteExpedientestServices = async (req) => {};
+const getAllPaymentstServices = async (req) => {};
+
+const updatePaymentsServices = async (req) => {
+  
+  const {id} = req.params
+  console.log(id);
+
+  const payment = await Payment.findOne({_id:id})
+
+  
+};
 
 const readPaymentsServices = async (req) => {
         const {id} = req.params
 
     const payment = await Payment.findOne({_id:id})
+
+    if(!payment) throw new Error('Ese pago no existe')
 
         return payment
 
@@ -88,5 +91,6 @@ const readPaymentsServices = async (req) => {
 
 module.exports = {
   createPaymentsServices,
-  readPaymentsServices
+  readPaymentsServices,
+  updatePaymentsServices
 };

@@ -30,6 +30,12 @@ const ExpedienteSchema = Schema({
     default: "Pendiente",
     enum: ["Pagado", "Pendiente"],
   },
+  documento: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Documento",
+    },
+  ],
   unsigned_contract: {
     type: String,
   },

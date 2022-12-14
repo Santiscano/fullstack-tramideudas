@@ -14,11 +14,11 @@ const uploadDocument = async (req, file, fileData) => {
   if (!file || Object.keys(file).length === 0)
     throw new Error("No enviaste ningun Documento");
 
-  documentos = file.documentos;
+  documentos = file.documentos || file;
 
   if (!documentos) throw new Error("No enviaste ningun documento");
 
-  if (Object.keys(file).length >= 2) throw new Error("Envia solo un documento");
+  // if (Object.keys(file).length >= 2) throw new Error("Envia solo un documento");
 
   if (!name || !category)
     throw new Error("Debes enviar el nombre y categoria del documento");
