@@ -2,6 +2,7 @@ const moment = require("moment-timezone");
 const Payment = require("../../models/Payment");
 const Expediente = require("../../models/Expediente");
 const { uploadDocument } = require("../../utils/uploadDocument");
+const { method } = require("lodash");
 
 const createPaymentsServices = async (req) => {
 
@@ -71,11 +72,41 @@ const getAllPaymentstServices = async (req) => {};
 const updatePaymentsServices = async (req) => {
   
   const {id} = req.params
-  console.log(id);
+  let {amount,type,note,date,method,invoiced} = req.body
+  let documento;
 
   const payment = await Payment.findOne({_id:id})
 
+  if (payment.invoiced === true) throw new Error('Este pago ya esta facturado y no puede ser editado')
+
+  date = !date ? moment().toDate() : moment(date, "DD/MM/YYYY").format();
+  method ? method : payment.method;
+
+  if (req.files) {
+    const file = req.files
+    const dataFile = {
+      name: `comprobante-${method}-${moment(date).format("DD-MM-YYYY")}`,
+      category:'comprobantes'
+       }
+  documento = await uploadDocument(req,file,dataFile)
+  }
+
+  if (type === 'reembolso') {
+    amount = -amount
+  }
+
+  const data = {
+    amount: amount ? amount : payment.amount,
+    type: type ? type : payment.type,
+    note: note ? note : payment.note,
+    date,
+    method,
+   receipt: documento && documento,
+    invoiced: invoiced === 'true'
+  }
   
+  return await Payment.findByIdAndUpdate({_id:payment._id},data,{new:true})
+
 };
 
 const readPaymentsServices = async (req) => {
