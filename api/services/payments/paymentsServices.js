@@ -2,7 +2,6 @@ const moment = require("moment-timezone");
 const Payment = require("../../models/Payment");
 const Expediente = require("../../models/Expediente");
 const { uploadDocument } = require("../../utils/uploadDocument");
-const { method } = require("lodash");
 
 const createPaymentsServices = async (req) => {
 

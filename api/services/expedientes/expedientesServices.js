@@ -119,7 +119,7 @@ const getAllExpedienteServices = async (req) => {
 };
 
 const updateExpedienteServices = async (req) => {
-  
+  let documento;
   const {id} = req.params
   let producto;
   const {product,paymentStatus,price} = req.body
@@ -129,11 +129,39 @@ const updateExpedienteServices = async (req) => {
     producto = await Product.findOne({_id:product})
     if(producto) throw new Error('No existe ese producto')
   }
+  if (req.files) {
+    const files = req.files
+
+    if (files.documentos){ 
+
+    if (files.documentos.length > 0) {
+
+       documento = await  Promise.all(files.documentos.map(async(file,idx) => {
+        const dataFile = {
+              name: `expediente-file-${idx}-${moment().format("DD-MM-YYYY")}`,
+              category:'expedientes'
+               }
+
+          return await uploadDocument(req,file,dataFile)
+               
+      }))
+    }else{
+
+      const dataFile = {
+        name: `expediente-${moment().format("DD-MM-YYYY")}`,
+        category:'expedientes'
+         }
+
+      documento = await uploadDocument(req,files,dataFile)
+    }
+  }
+  }
   
   const data = {
     product: !producto ? expediente._id : product._id,
     price: !price ? expediente.price : price, 
-    paymentStatus: !paymentStatus ? expediente.paymentStatus : paymentStatus 
+    paymentStatus: !paymentStatus ? expediente.paymentStatus : paymentStatus,
+    documento: documento && documento 
   }
 
   if(!expediente) throw new Error('El expediente que enviaste no existe')
