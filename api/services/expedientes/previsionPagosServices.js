@@ -23,9 +23,10 @@ const updatePrevisionPagosServices = async (req) => {
 
   const previsionPagos = await PrevisionPago.find(query).lean();
 
-  console.log(previsionPagos);
 
-  return await reprevisionPagos(previsionPagos, newdate);
+ await reprevisionPagos(previsionPagos, newdate);
+
+ return await PrevisionPago.find(query).lean();
 };
 
 const updateOnePrevisionPagosServices = async (req) => {

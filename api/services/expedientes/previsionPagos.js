@@ -25,7 +25,6 @@ const previsionPagos = async (data) => {
 
 const reprevisionPagos = async (data,newDate) => {
 
-  // TODO: verificar por que guarda con una hora de diferencia
 
    const initial_date = moment(newDate,'DD-MM-YYYY')
 
@@ -35,12 +34,12 @@ const reprevisionPagos = async (data,newDate) => {
 
     const {quoteNumber,_id,date,total,...rest} = previsionPago
    
-    // console.log(dates);
-    console.log(dates);
+
     await PrevisionPago.findByIdAndUpdate(_id,{
         date:dates,
         ...rest
     })
+
 
   });
 

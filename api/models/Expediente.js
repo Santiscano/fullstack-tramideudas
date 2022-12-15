@@ -7,7 +7,7 @@ const ExpedienteSchema = Schema({
   },
   product: {
     type: Schema.Types.ObjectId,
-    ref: "Expediente"
+    ref: "Product"
   },
   price: {
     type: Number,

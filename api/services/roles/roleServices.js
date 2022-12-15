@@ -3,6 +3,8 @@ const Role = require("../../models/Role");
 const createRoleServices = async (body) => {
   const { name } = body;
 
+  if(!name) throw new Error('El nombre del rol es obligatorio')
+
   const roleValid = await Role.findOne({ name });
 
   if (roleValid) throw new Error("El rol debe ser unico");
@@ -41,7 +43,7 @@ const updateRoleServices = async (params, body) => {
   if (!id) throw new Error("revisa el parametro");
 
   // Validaciones
-  if (!name) throw new Error("Envia el role");
+  if (!name) throw new Error("Envia el nombre del rol");
 
   const roleValid = await Role.findOne({ name });
 
@@ -61,12 +63,17 @@ const readRoleServices = async (params) => {
 
   const role = await Role.findById(id);
 
+  if (!role) throw new Error('No se encontro el rol')
+
   return role;
 };
 const deleteRoleServices = async (params) => {
   const { id } = params;
 
-  return await Role.findByIdAndDelete({ _id: id });
+  const role = await Role.findByIdAndDelete({ _id: id });
+
+  if(!role) throw new Error('No existe ese rol')
+  return role
 };
 module.exports = {
   createRoleServices,

@@ -1,7 +1,5 @@
 const Product = require("../../models/Product");
 
-const regexDouble = new RegExp(/\-?\d+\.\d+/);
-
 const createProductServices = async (req) => {
   let { name, price, isBankable } = req.body;
 
@@ -10,19 +8,14 @@ const createProductServices = async (req) => {
 
   isBankable = isBankable !== true ? { isBankable: false } : { isBankable };
 
-  const result = regexDouble.test(price);
-
-  if (!result) throw new Error("el precio debe ser un double");
-
   const data = {
     name,
     price,
     ...isBankable,
   };
 
-  await new Product(data).save();
+ return await new Product(data).save();
 
-  return data;
 };
 
 const getAllProductServices = async (req) => {
@@ -44,11 +37,6 @@ const getAllProductServices = async (req) => {
 
 const updateProductServices = async (req) => {
   const { id } = req.params;
-  const { price } = req.body;
-
-  const result = regexDouble.test(price);
-
-  if (!result) throw new Error("el precio debe ser un double");
 
   return await Product.findByIdAndUpdate(
     { _id: id },
