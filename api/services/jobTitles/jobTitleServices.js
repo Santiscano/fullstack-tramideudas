@@ -23,6 +23,7 @@ const getAllJobTitleServices = async (req) => {
     .skip(page * limit)
     .limit(limit);
 
+
   const count = await JobTitle.countDocuments(params);
 
   const data = {
@@ -50,18 +51,30 @@ const updateJobTitleServices = async (params, body) => {
   if (roleValid) throw new Error("El cargo debe ser unico");
 
   
-  return await JobTitle.findByIdAndUpdate({ _id: id },{ job_title: job_title },{new: true,});
+  const cargo = await JobTitle.findByIdAndUpdate({ _id: id },{ job_title: job_title },{new: true,});
+
+  if(!cargo) throw new Error('No existe ese cargo');
+
+  return cargo;
 };
 
 const readJobTitleServices = async (params) => {
   const { id } = params;
 
-  return await JobTitle.findById(id);
+const cargo = await JobTitle.findById(id);
+
+  if(!cargo) throw new Error('No existe ese cargo');
+
+  return cargo;
 };
 const deleteJobTitleServices = async (params) => {
   const { id } = params;
 
-  return await JobTitle.findByIdAndDelete({ _id: id });
+  const cargo = await JobTitle.findByIdAndDelete({ _id: id });
+
+  if(!cargo) throw new Error('No existe ese cargo')
+
+  return cargo;
 };
 module.exports = {
   createJobTitleServices,

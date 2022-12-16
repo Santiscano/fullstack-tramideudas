@@ -1,12 +1,22 @@
 const {
    getAllHolidayServices,
    getHolidayServices,
-   createHolidayServices
+   createHolidayServices,
+   updateHolidayServices,
+   deleteHolidayServices
 } = require("../../services/holidays/holidaysServices");
 
 const getHoliday = async (req, res) => {
   try {
     const data = await getHolidayServices(req.params);
+    return res.status(200).json({ response: data });
+  } catch (error) {
+    res.status(400).json({ errorMessage: error.message });
+  }
+};
+const updateHolidayController = async (req, res) => {
+  try {
+    const data = await updateHolidayServices(req);
     return res.status(200).json({ response: data });
   } catch (error) {
     res.status(400).json({ errorMessage: error.message });
@@ -28,9 +38,19 @@ const createHoliday = async (req, res) => {
     res.status(400).json({ errorMessage: error.message });
   }
 };
+const deleteHolidayController = async (req, res) => {
+  try {
+    const data = await deleteHolidayServices(req);
+    return res.status(200).json({ response: data });
+  } catch (error) {
+    res.status(400).json({ errorMessage: error.message });
+  }
+};
 
 module.exports = {
   createHoliday,
   getAllHoliday,
-  getHoliday
+  getHoliday,
+  updateHolidayController,
+ deleteHolidayController
 };

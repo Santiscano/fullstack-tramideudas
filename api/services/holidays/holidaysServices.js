@@ -13,6 +13,22 @@ if (dateValid) throw new Error("Ya existe ese feriado");
 return await new Holiday({ date,reason}).save();
 
 };
+const updateHolidayServices = async (req) => {
+const {id} = req.params
+const {date,reason,} = req.body 
+let dateValid;
+
+if(date) dateValid = await Holiday.findOne({ date });
+
+if(dateValid) throw new Error("Ya existe ese feriado");
+
+const feriado = await Holiday.findByIdAndUpdate({_id:id},{...req.body},{new:true});
+
+if(!feriado) throw new Error('Ese feriado no existe')
+
+return feriado
+
+};
 
 const getHolidayServices = async (params) => {
 
@@ -43,9 +59,21 @@ const getAllHolidayServices = async (req) => {
 
   return data;
 };
+const deleteHolidayServices = async (req) => {
+  const { id } = req.params;
+  if (!id) throw new Error("Envia el id del feriado");
+  const data = await Holiday.findByIdAndRemove(
+    { _id: id },
+    { new: true }
+  ).lean();
+  if (!data) throw new Error("Ese feriado no se encuentra");
+  return data;
+};
 
 module.exports = {
   createHolidayServices,
   getAllHolidayServices,
-  getHolidayServices
+  getHolidayServices,
+  updateHolidayServices,
+  deleteHolidayServices
 };
