@@ -72,6 +72,9 @@ const AgenteSchema = Schema({
   google_refresh_token: {
     type: String,
   },
+  extension: {
+    type: String,
+  },
 });
 
 const Agente = model("Agente", AgenteSchema);

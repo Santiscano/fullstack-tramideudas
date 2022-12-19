@@ -16,6 +16,7 @@ require("./utils/cronJob");
 
 app.use(cookieParser());
 app.use(express.json());
+app.use(express.urlencoded({extended: true}))
 app.use(
   cors({
     origin: process.env.PORT_FRONT_ORIGIN,
@@ -33,6 +34,7 @@ app.use("/api/expedientes/", require("./routes/expedientes/expedientesRouter.js"
 app.use("/api/pagos/", require("./routes/payments/paymentsRouter.js"));
 app.use("/api/previsionpagos/", require("./routes/expedientes/previsionPagosRouter.js"));
 app.use("/api/noteexpedientes/", require("./routes/expedientes/noteExpedientesRouter.js"));
+app.use("/api/calls/", require("./routes/calls/callsRouter.js"));
 app.use("/api/historychange/", require("./routes/clients/historyChangesRouter.js"));
 app.use("/api/noteclient/", require("./routes/clients/noteClientsRouter.js"));
 app.use("/api/documento/", require("./routes/documentos/documentosRouter.js"));
