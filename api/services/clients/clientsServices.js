@@ -134,20 +134,51 @@ const getAllClientServices = async (req) => {
 const updateClientServices = async (req) => {
   const agente = req.userId;
   const { id } = req.params;
-  const body = req.body;
+  let {telephone_number,...body} = req.body;
+  let telephone = [];
 
   const client = await Client.findOne({ _id: id });
 
   if (!client) throw new Error("Ese cliente no esta disponible");
 
+  if (telephone_number) {
+
+    const existNumber = await findClientFromNumber(telephone_number)
+   
+    if (existNumber) throw new Error('Hay un numero en uso')
+
+    telephone_number.forEach((number, idx) => {
+
+      const main = idx === 0;
+      let objNumbers = { number, main };
+      telephone.push(objNumbers);
+    });
+  }
+ 
   const data = {
     ...body,
+    telephone: telephone_number ? telephone : client.telephone,
     modifiedAt: moment().toDate(),
   };
 
   let newData = await Client.findByIdAndUpdate({ _id: client.id }, data, {
     new: true,
   });
+
+  
+  if (data.telephone) {
+
+    data.telephone.forEach(async (data) => {
+
+      const calls = await Call.find({caller_id:data.number})
+     
+      for (const call of calls) {
+        
+        await Call.findByIdAndUpdate({_id:call._id},{client:newData._id})
+
+      }
+    })
+  }
 
   // TODO:mover a utils getupdatekeys
   const getUpdatedKeys = (oldData, newData) => {
