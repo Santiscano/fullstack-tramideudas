@@ -62,14 +62,8 @@ const createAgentServices = async (body) => {
     email,
   });
 
-  if (usernameValid)
-    throw new Error(
-      "debes ingresar un username unico"
-    );
-  if (emailValid)
-    throw new Error(
-      "Ese mail no esta disponible"
-    );
+  if (usernameValid) throw new Error("debes ingresar un username unico");
+  if (emailValid) throw new Error("Ese mail no esta disponible");
   const documentExist = await Agente.findOne({
     identity_document,
   });
@@ -186,76 +180,174 @@ const updateAgentAvatarServices = async (req) => {
   return agent;
 };
 const updateAgentServices = async (req) => {
+  const { id } = req.params;
 
-  let {
-    identity_document,
-    email,
-    username,
-    password,
-    newPassword,
-    image_profile,
-    name_show_email,
-    role,
-    fullname,
-    telephones,
-    workplace,
-    schedule,
-    entry_time,
-    break_time,
-    daily_working_hours,
-    job_title,
-    isVacation,
-  } = req.body;
+  const editor = await Agente.findById({ _id: req.userId });
 
-  let { id } = req.params;
-  let data;
+  if (editor.role.toString() === process.env.CRM_ADMIN_ID) {
+    let {
+      identity_document,
+      email,
+      username,
+      newPassword,
+      name_show_email,
+      role,
+      telephones,
+      job_title,
+      isVacation,
+      extension,
+      avatar,
+      password,
+      isActive,
+      ...rest
+    } = req.body;
 
-  if (!email) throw new Error("envia tu email");
-  if (!username) throw new Error("envia tu username");
-  if (!identity_document) throw new Error("Debes enviar el documento");
+    if (username) {
+      const existUsername = await Agente.findOne({ username });
+      if (existUsername) throw new Error("El username es invalido");
+      username = username ? { username } : null;
+    }
 
-  // if (!password) throw new Error("envia tu password");
-  // if (!newPassword) throw new Error("envia tu nuevo password");
-  // if (password === newPassword) throw new Error("Pon una nueva contraseña");
+    if (newPassword) {
+      const salt = bcryptjs.genSaltSync();
+      const dataPassword = bcryptjs.hashSync(newPassword, salt);
 
-  const agent = await Agente.findOne({ _id: id });
+      newPassword = newPassword ? { password: dataPassword } : null;
+    }
 
-  if (!agent) throw new Error("Revisa los datos enviados");
+    if (identity_document) {
+      const existDocument = await Agente.findOne({ identity_document });
+      if (existDocument) throw new Error("Ese documento no es valido");
+      identity_document = identity_document ? { identity_document } : null;
+    }
 
-  // const check = bcryptjs.compareSync(password, agent.password);
+    if (name_show_email) {
+      name_show_email = name_show_email ? { name_show_email } : null;
+    }
 
-  // console.log(check);
+    if (telephones) {
+      if (!Array.isArray(telephones))
+        throw new Error(
+          "Los numeros de telefono se deben enviar como un Array[String]"
+        );
 
-  // if (!check || check === false) throw new Error("La contraseña no coincide");
+      telephones = telephones ? { telephones } : null;
+    }
 
-  // if (check) {
+    if (isVacation) {
+      if (!Array.isArray(isVacation))
+        throw new Error(
+          "Las vacaciones se deben enviar como un Array[String] "
+        );
 
-  //   const salt = bcryptjs.genSaltSync();
-  //   password = bcryptjs.hashSync(newPassword, salt);
+      const newVacation = isVacation.map((date) =>
+        moment(date, "DD/MM/YYYY").format()
+      );
+      isVacation = isVacation ? { isVacation: newVacation } : null;
+    }
 
-  //   data = {
-  //     password,
-  //     email,
-  //     isVacation
-  //   }
-  //   return await Agente.findByIdAndUpdate(data);
-  // }
+    if (email) {
+      const emailExist = await Agente.findOne({
+        email,
+      });
+      if (emailExist) throw new Error("Ese mail ya esta registrado");
 
-  data = {
-    image_profile,
-    name_show_email,
-    role,
-    fullname,
-    telephones,
-    workplace,
-    schedule,
-    entry_time,
-    break_time,
-    daily_working_hours,
-    job_title,
-    isVacation,
-  };
-  return await Agente.findByIdAndUpdate({ _id: agent.id }, data);
+      const regxGmail = new RegExp(
+        "^[a-z0-9](.?[a-z0-9]){5,}@g(oogle)?mail.com$"
+      );
+
+      if (!regxGmail.test(email)) throw new Error("Debe ser un gmail valido");
+
+      email = email ? { email } : null;
+    }
+
+    if (role) {
+      const roleExist = await Role.findOne({
+        name: role,
+      });
+
+      if (!roleExist) throw new Error("Ese rol no existe");
+
+      role = role ? { role: roleExist._id } : null;
+    }
+
+    if (job_title) {
+      const job_titleExist = await JobTitle.findOne({job_title});
+
+      if (!job_titleExist) throw new Error("Ese Cargo no existe");
+
+      job_title = job_title ? { job_title: job_titleExist._id } : null;
+    }
+    if(extension){
+      const extensionExist = await Agente.findOne({extension});
+
+      if(extensionExist) throw new Error('Esa extension ya esta en uso')
+
+      extension = extension ? {extension} : null;
+    }
+
+    const data = {
+      ...username,
+      ...email,
+      ...name_show_email,
+      ...identity_document,
+      ...newPassword,
+      ...telephones,
+      ...isVacation,
+      ...role,
+      ...extension,
+      ...rest,
+    };
+
+    const agente = await Agente.findByIdAndUpdate({ _id: id }, data, {
+      new: true,
+    });
+
+    if (!agente) throw new Error("No existe el agente");
+
+    return agente;
+  } else {
+    let { name_show_email, telephones, isVacation } = req.body;
+
+    if (name_show_email) {
+      name_show_email = name_show_email ? { name_show_email } : null;
+    }
+    if (telephones) {
+      if (!Array.isArray(telephones))
+        throw new Error(
+          "Los numeros de telefono se deben enviar como un Array[String]"
+        );
+
+      telephones = telephones ? { telephones } : null;
+    }
+
+    if (isVacation) {
+      if (!Array.isArray(isVacation))
+        throw new Error(
+          "Las vacaciones se deben enviar como un Array[String] "
+        );
+
+      const newVacation = isVacation.map((date) =>
+        moment(date, "DD/MM/YYYY").format()
+      );
+
+      isVacation = isVacation ? { isVacation: newVacation } : null;
+    }
+
+    const data = {
+      ...name_show_email,
+      ...telephones,
+      ...isVacation,
+    };
+
+    const agente = await Agente.findByIdAndUpdate({ _id: id }, data, {
+      new: true,
+    });
+
+    if (!agente) throw new Error("No existe el agente");
+
+    return agente;
+  }
 };
 
 const readAgentServices = async (params) => {
@@ -263,7 +355,7 @@ const readAgentServices = async (params) => {
 
   const agent = await Agente.findById(id);
 
-  if (!agent) throw new Error('Ese agente no existe')
+  if (!agent) throw new Error("Ese agente no existe");
 
   return agent;
 };
