@@ -2,14 +2,22 @@ const Call = require("../../models/Call");
 const moment = require("moment-timezone");
 const Agente = require("../../models/Agente");
 
+const { findClientFromNumber } = require("../../utils/findClientFromNumber");
+
 const createHistoryCallServices = async (req) => {
  
   if (req.body.event === "NOTIFY_START") {
+
     const { event, pbx_call_id, caller_id } = req.body;
 
+   const cliente = await findClientFromNumber(caller_id)
+
+   let client = cliente ? {client: cliente._id} : null
+    
     const data = {
       id_call: pbx_call_id,
       caller_id: caller_id,
+      ...client,
       history: {
         event,
         date: moment().toDate(),

@@ -5,6 +5,9 @@ const Client = require("../../models/Client");
 const HistoryChange = require("../../models/HistoryChange");
 const { default: mongoose } = require("mongoose");
 
+const {findClientFromNumber} = require('../../utils/findClientFromNumber');
+const Call = require("../../models/Call");
+
 moment.tz.setDefault("Europe/Madrid");
 const { isEqual, uniq } = _;
 
@@ -27,13 +30,20 @@ const createClientServices = async (body) => {
   if (!advertising_allowed) advertising_allowed = false;
 
   if (telephone_number) {
+
+    const existNumber = await findClientFromNumber(telephone_number)
+   
+    if (existNumber) throw new Error('Hay un numero en uso')
+
     telephone_number.forEach((number, idx) => {
+
       const main = idx === 0;
       let objNumbers = { number, main };
       telephone.push(objNumbers);
     });
   }
 
+  
   if (address) {
     if (
       !address.type_via ||
@@ -68,6 +78,8 @@ const createClientServices = async (body) => {
       advertising_allowed,
     };
   }
+
+  // TODO: LLAMAR A TODAS LAS CALLS Y SI EL USUARIO CREADO YA TIENE LLAMADAS AÑADIR EL USER AL HISTORIAL DE LLAMADAS
 
   return await new Client(data).save();
 };
