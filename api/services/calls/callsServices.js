@@ -27,9 +27,12 @@ const createHistoryCallServices = async (req) => {
     new Call(data).save();
   }
   if (req.body.event === "NOTIFY_ANSWER") {
-    const { event, pbx_call_id, extension } = req.body;
+    const { event, pbx_call_id, internal } = req.body;
 
-    const agente = await Agente.findOne({ extension });
+    const agente = await Agente.findOne({ extension:internal });
+
+
+    console.log(agente);
 
     const data = {
       history: {

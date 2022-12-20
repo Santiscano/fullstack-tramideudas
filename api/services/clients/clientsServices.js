@@ -79,9 +79,24 @@ const createClientServices = async (body) => {
     };
   }
 
-  // TODO: LLAMAR A TODAS LAS CALLS Y SI EL USUARIO CREADO YA TIENE LLAMADAS AÑADIR EL USER AL HISTORIAL DE LLAMADAS
+  const newClient =await new Client(data).save();
 
-  return await new Client(data).save();
+  if (data.telephone) {
+
+    data.telephone.forEach(async (data) => {
+
+      const calls = await Call.find({caller_id:data.number})
+     
+      for (const call of calls) {
+        
+        await Call.findByIdAndUpdate({_id:call._id},{client:newClient._id})
+
+      }
+    })
+  }
+
+  return newClient
+
 };
 
 const getAllClientServices = async (req) => {
